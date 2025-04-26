@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explication BIA</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --danger: #f94144;
+            --info: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #adb5bd;
+            --correct: #2dc653;
+            --incorrect: #e63946;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            background-color: #f0f2f5;
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .question-card {
+            margin-bottom: 2rem;
+        }
+        
+        .question-title {
+            color: var(--primary);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--light);
+            padding-bottom: 0.5rem;
+        }
+        
+        .question-text {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .question-text img {
+            max-width: 100%;
+            height: auto;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        
+        .options-container {
+            display: grid;
+            gap: 0.7rem;
+            margin-bottom: 2rem;
+        }
+        
+        .option {
+            padding: 0.7rem;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .option.correct {
+            border-color: var(--correct);
+            background-color: rgba(45, 198, 83, 0.1);
+        }
+        
+        .explanation-section {
+            margin-top: 2rem;
+        }
+        
+        .explanation-title {
+            color: var(--info);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--light);
+            padding-bottom: 0.5rem;
+        }
+        
+        .explanation-content {
+            background-color: rgba(72, 149, 239, 0.05);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--info);
+        }
+        
+        .explanation-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .explanation-content strong {
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="question-card">
+            <h2 class="question-title">Question</h2>
+            <div class="question-text">
+                Pour un aéronef en vol, le seul phénomène pouvant être la cause de tous ces dangers (réduction de visibilité, cisaillement de vent, dégâts à la structure, altération du profil aérodynamique, givrage) est :
+                
+            </div>
+            <div class="options-container">
+                <div class="option">A- l'onde</div><div class="option">B- la turbulence</div><div class="option correct">C- les précipitations</div><div class="option">D- le brouillard</div>
+            </div>
+        </div>
+        
+        <div class="explanation-section">
+            <h2 class="explanation-title">Explication</h2>
+            <div class="explanation-content">
+                Les précipitations peuvent être la cause de ces dangers pour plusieurs raisons :<br/>
+<br/>
+<strong>Réduction de la visibilité</strong> : Les précipitations, telles que la pluie ou la neige, réduisent la visibilité en obscurcissant l'atmosphère. Cela peut rendre difficile pour les pilotes de voir clairement les autres aéronefs, les obstacles ou les points de repère nécessaires à la navigation en toute sécurité.<br/>
+<br/>
+<strong>Cisaillement de vent</strong> : Les précipitations peuvent être associées à des zones de cisaillement du vent, où les vents changent de direction ou d'intensité de manière abrupte sur une courte distance. Ces variations soudaines du vent peuvent créer des conditions de vol instables et difficiles à gérer pour les pilotes.<br/>
+<br/>
+<strong>Dégâts à la structure</strong> : Certaines précipitations, comme la grêle, peuvent causer des dommages physiques à la structure de l'aéronef en frappant sa surface extérieure. Les impacts répétés de grêlons peuvent endommager les surfaces vitales de l'aéronef, telles que les ailes, le fuselage ou les empennages.<br/>
+<br/>
+<strong>Altération du profil aérodynamique</strong> : Les précipitations peuvent modifier le profil aérodynamique de l'aéronef en perturbant le flux d'air autour de ses surfaces de contrôle, comme les ailes et les gouvernes. Par exemple, la formation de givre sur les ailes peut modifier leur forme et réduire leur portance, affectant ainsi les performances de l'aéronef.<br/>
+<br/>
+<strong>Givrage</strong> : Les précipitations peuvent givrer les surfaces de l'aéronef lorsqu'elles entrent en contact avec des températures de l'air suffisamment froides. Le givre peut s'accumuler sur les ailes, les hélices, les antennes et d'autres parties de l'aéronef, ce qui peut perturber le flux d'air et compromettre les performances de vol, notamment en augmentant la traînée et en réduisant la portance.<br/>
+<br/>
+<br/>
+
+En résumé, les précipitations peuvent être la cause de ces différents dangers en raison de leur capacité à altérer les conditions de vol, à endommager la structure de l'aéronef et à compromettre ses performances aérodynamiques, ce qui nécessite une vigilance accrue de la part des pilotes lorsqu'ils volent dans des conditions météorologiques défavorables.
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explication BIA</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --danger: #f94144;
+            --info: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #adb5bd;
+            --correct: #2dc653;
+            --incorrect: #e63946;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            background-color: #f0f2f5;
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .question-card {
+            margin-bottom: 2rem;
+        }
+        
+        .question-title {
+            color: var(--primary);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--light);
+            padding-bottom: 0.5rem;
+        }
+        
+        .question-text {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .question-text img {
+            max-width: 100%;
+            height: auto;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        
+        .options-container {
+            display: grid;
+            gap: 0.7rem;
+            margin-bottom: 2rem;
+        }
+        
+        .option {
+            padding: 0.7rem;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .option.correct {
+            border-color: var(--correct);
+            background-color: rgba(45, 198, 83, 0.1);
+        }
+        
+        .explanation-section {
+            margin-top: 2rem;
+        }
+        
+        .explanation-title {
+            color: var(--info);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--light);
+            padding-bottom: 0.5rem;
+        }
+        
+        .explanation-content {
+            background-color: rgba(72, 149, 239, 0.05);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--info);
+        }
+        
+        .explanation-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .explanation-content strong {
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="question-card">
+            <h2 class="question-title">Question</h2>
+            <div class="question-text">
+                Pour réaliser une mise en virage, on incline l’appareil en roulis. Il apparaît alors une rotation en lacet dans le sens opposé au sens du virage désiré. Ceci est dû :
+                
+            </div>
+            <div class="options-container">
+                <div class="option">A- au lacet induit</div><div class="option correct">B- au lacet inverse</div><div class="option">C- au roulis inverse</div><div class="option">D- au roulis induit</div>
+            </div>
+        </div>
+        
+        <div class="explanation-section">
+            <h2 class="explanation-title">Explication</h2>
+            <div class="explanation-content">
+                Lorsqu'un avion est incliné en roulis pour entrer en virage, une rotation en lacet dans le sens opposé au virage désiré peut se produire. Cela s'appelle le lacet inverse. Voici pourquoi cela se produit :<br/>
+<br/>
+<br/>
+<strong>Lacet inverse</strong> : Lorsque l'avion est incliné pour commencer un virage (roulis), l'aile qui descend produit plus de portance et donc plus de traînée induite par rapport à l'aile qui monte. Cette différence de traînée crée un moment de lacet vers le sens opposé au virage souhaité. Par exemple, si vous inclinez l'avion vers la droite (roulis à droite), le lacet inverse tentera de faire tourner le nez de l'avion vers la gauche.<br/>
+<br/>
+<strong>Lacet induit</strong> : Cela se réfère au lacet qui se produit dans le même sens que le roulis. Cela n'explique pas la rotation dans le sens opposé.<br/>
+<br/>
+<strong>Roulis inverse</strong> : Le roulis inverse se réfère à une situation où l'avion tendrait à rouler dans le sens opposé à celui désiré, mais ce terme n'est pas approprié pour décrire le phénomène de lacet observé.<br/>
+<br/>
+<strong>Roulis induit</strong> : Ce terme se réfère au roulis qui se produit en raison d'autres forces, mais ne concerne pas directement le phénomène de lacet inverse observé en virage.<br/>
+<br/>
+<br/>
+
+Donc, le phénomène où une rotation en lacet dans le sens opposé au virage désiré apparaît lors de l'inclinaison de l'appareil en roulis est dû au lacet inverse.
+            </div>
+        </div>
+    </div>
+</body>
+</html>

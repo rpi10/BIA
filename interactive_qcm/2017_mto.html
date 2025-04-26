@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Météorologie et aérologie - (B.I.A. 2017)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --danger: #f94144;
+            --info: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #adb5bd;
+            --correct: #2dc653;
+            --incorrect: #e63946;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f2f5;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .quiz-title {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .quiz-subtitle {
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .question-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            display: none;
+        }
+        
+        .question-card.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .question-number {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .question-text img {
+            max-width: 100%;
+            height: auto;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        
+        .options-container {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .option-btn {
+            background-color: var(--light);
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            display: flex;
+            align-items: center;
+        }
+        
+        .option-btn:hover {
+            background-color: #e9ecef;
+            transform: translateY(-2px);
+        }
+        
+        .option-btn.selected {
+            border-color: var(--primary);
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+        
+        .option-btn.correct {
+            border-color: var(--correct);
+            background-color: rgba(45, 198, 83, 0.1);
+        }
+        
+        .option-btn.incorrect {
+            border-color: var(--incorrect);
+            background-color: rgba(230, 57, 70, 0.1);
+        }
+        
+        .option-btn.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        .option-prefix {
+            font-weight: 600;
+            color: var(--primary);
+            margin-right: 10px;
+            min-width: 25px;
+        }
+        
+        .option-btn.correct .option-prefix {
+            color: var(--correct);
+        }
+        
+        .option-btn.incorrect .option-prefix {
+            color: var(--incorrect);
+        }
+        
+        .feedback-icon {
+            margin-left: auto;
+            font-size: 1.2rem;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+        
+        .btn-next {
+            display: none;
+        }
+        
+        .results-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            display: none;
+        }
+        
+        .results-card.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        .results-card h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .results-card p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .celebration {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .explanation-note {
+            font-size: 0.9rem;
+            color: var(--info);
+            margin-top: 1rem;
+            display: block;
+        }
+        
+        .explanation-link {
+            color: var(--info);
+            text-decoration: none;
+        }
+        
+        .explanation-link:hover {
+            text-decoration: underline;
+        }
+        
+        .score-display {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 1rem 0;
+        }
+        
+        .answer-feedback {
+            font-size: 1rem;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .answer-feedback.correct {
+            background-color: rgba(45, 198, 83, 0.1);
+            color: var(--correct);
+            display: block;
+        }
+        
+        .answer-feedback.incorrect {
+            background-color: rgba(230, 57, 70, 0.1);
+            color: var(--incorrect);
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .quiz-title {
+                font-size: 1.75rem;
+            }
+            
+            .question-text {
+                font-size: 1.1rem;
+            }
+            
+            .option-btn {
+                padding: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="quiz-header">
+            <h1 class="quiz-title">Météorologie et aérologie</h1>
+            <h2 class="quiz-subtitle">(B.I.A. 2017)</h2>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+        </div>
+        
+        <div id="questions-container">
+            <!-- Questions will be inserted here by JavaScript -->
+        </div>
+        
+        <div class="results-card" id="results-card">
+            <div class="celebration">🎉</div>
+            <h2>Mission Accomplie!</h2>
+            <p>Vous avez terminé le QCM.</p>
+            <div id="final-score" class="score-display">Score: 0/0</div>
+            <a href="annales_corrections/2017_mto_corrections.html" class="btn btn-primary">Voir la correction complète</a>
+        </div>
+    </div>
+    
+    <script>
+        // Quiz data
+        const quizData = {"title": "M\u00e9t\u00e9orologie et a\u00e9rologie", "subtitle": "(B.I.A. 2017)", "questions": [{"text": "<div class=\"q\"><p>1 - Les deux principaux composants de l'air sec sont\u00a0: <em><a href=\"annales_explications/explication_2661.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- l'azote et l'oxyg\u00e8ne", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- l'oxyg\u00e8ne et le gaz carbonique", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- l'azote et l'h\u00e9lium", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- l'oxyg\u00e8ne et l'hydrog\u00e8ne", "value": "d", "letter": "D", "is_correct": false}], "id": 1, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>2 - Dans l'atmosph\u00e8re standard, la temp\u00e9rature et la pression de 0 \u00e0 11 km d'altitude \u00e9voluent de la mani\u00e8re suivante\u00a0: <em><a href=\"annales_explications/explication_2662.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- la temp\u00e9rature diminue, la pression augmente", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- la temp\u00e9rature diminue et la pression reste constante", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- la temp\u00e9rature et la pression sont constantes", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- la temp\u00e9rature et la pression diminuent", "value": "d", "letter": "D", "is_correct": true}], "id": 2, "correct_answer": "D"}, {"text": "<div class=\"q\"><p>3 - Dans l'atmosph\u00e8re standard, la temp\u00e9rature au niveau de la mer est de\u00a0: <em><a href=\"annales_explications/explication_2663.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- 0\u00a0\u00b0C", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- 10\u00a0\u00b0C", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- 15\u00a0\u00b0C", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- 20\u00a0\u00b0C", "value": "d", "letter": "D", "is_correct": false}], "id": 3, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>4 - L'instrument utilis\u00e9 pour mesurer la vitesse du vent en surface est\u00a0: <em><a href=\"annales_explications/explication_2664.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- une girouette plac\u00e9e sur un pyl\u00f4ne", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- un an\u00e9mom\u00e8tre plac\u00e9 sur un pyl\u00f4ne", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- un ballon sonde", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- un barom\u00e8tre plac\u00e9 sur un pyl\u00f4ne", "value": "d", "letter": "D", "is_correct": false}], "id": 4, "correct_answer": "B"}, {"text": "<div class=\"q\"><p>5 - Sur une carte de pression une ligne qui joint les points d'\u00e9gale pression est nomm\u00e9e\u00a0: <em><a href=\"annales_explications/explication_2665.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- une isotherme", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- une isocline", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- une isohypse", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- une isobare", "value": "d", "letter": "D", "is_correct": true}], "id": 5, "correct_answer": "D"}, {"text": "<div class=\"q\"><p>6 - \u00ab\u00a0marais barom\u00e9trique\u00a0\u00bb d\u00e9signe\u00a0: <em><a href=\"annales_explications/explication_2666.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- une zone o\u00f9 la pression varie peu", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- une zone ou un axe de basses pressions", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- une zone ou un axe de hautes pressions", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- une zone o\u00f9 le gradient de pression est tr\u00e8s \u00e9lev\u00e9", "value": "d", "letter": "D", "is_correct": false}], "id": 6, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>7 - Sur le sch\u00e9ma d'une perturbation pr\u00e9sent\u00e9 ci-dessous, le num\u00e9ro qui correspond au secteur chaud est\u00a0: <img alt=\"Sch\u00e9ma d'une perturbation\" src=\"imgs/m1-2017.gif\"/> <em><a href=\"annales_explications/explication_2667.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- 1", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- 2", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- 3", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- 4", "value": "d", "letter": "D", "is_correct": false}], "id": 7, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>8 - Au niveau d'un front chaud\u00a0: <em><a href=\"annales_explications/explication_2668.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- l'air chaud repousse l'air froid devant lui et passe au-dessus", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- l'air froid repousse l'air chaud devant lui et passe au-dessus", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- l'air froid repousse l'air chaud devant lui et passe au-dessous", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- l'air chaud repousse l'air froid devant lui et passe au-dessous", "value": "d", "letter": "D", "is_correct": false}], "id": 8, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>9 - Si un observateur se place face au vent dans l'h\u00e9misph\u00e8re nord, la d\u00e9pression et l'anticyclone se situent de la mani\u00e8re suivante\u00a0: <em><a href=\"annales_explications/explication_2669.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- anticyclone sur sa droite, d\u00e9pression sur sa gauche", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- anticyclone devant lui, d\u00e9pression derri\u00e8re lui", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- anticyclone sur sa gauche, d\u00e9pression sur sa droite", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- anticyclone derri\u00e8re lui, d\u00e9pression devant lui", "value": "d", "letter": "D", "is_correct": false}], "id": 9, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>10 - Le ph\u00e9nom\u00e8ne rentrant le plus souvent en jeu dans la formation des nuages est\u00a0: <em><a href=\"annales_explications/explication_2670.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- le refroidissement d'une masse d'air humide", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- l'augmentation de la pression atmosph\u00e9rique", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- le r\u00e9chauffement d'une masse d'air satur\u00e9e", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- l'ass\u00e8chement d'une masse d'air humide", "value": "d", "letter": "D", "is_correct": false}], "id": 10, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>11 - Le pr\u00e9fixe des nuages dont la base est la plus \u00e9lev\u00e9e est\u00a0: <em><a href=\"annales_explications/explication_2671.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- alto", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- strato", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- cirro", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- cumulo", "value": "d", "letter": "D", "is_correct": false}], "id": 11, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>12 - Le nuage figurant sur la photo ci-dessous est un\u00a0: <img alt=\"Nuage\" src=\"imgs/m2-2017.gif\"/> <em><a href=\"annales_explications/explication_2672.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- cumulonimbus", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- cumulus", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- stratus", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- altocumulus", "value": "d", "letter": "D", "is_correct": false}], "id": 12, "correct_answer": "B"}, {"text": "<div class=\"q\"><p>13 - Le ph\u00e9nom\u00e8ne m\u00e9t\u00e9orologique observ\u00e9 sur la photo ci-dessous est\u00a0: <img alt=\"Ph\u00e9nom\u00e8ne m\u00e9t\u00e9orologique\" src=\"imgs/m3-2017.gif\"/> <em><a href=\"annales_explications/explication_2673.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- du brouillard", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- un orage", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- un front chaud", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- la convection", "value": "d", "letter": "D", "is_correct": false}], "id": 13, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>14 - La gr\u00eale est un type de pr\u00e9cipitation qui se forme dans\u00a0: <em><a href=\"annales_explications/explication_2674.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- les stratus", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- les nimbostratus", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- les cumulonimbus", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- les stratocumulus", "value": "d", "letter": "D", "is_correct": false}], "id": 14, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>15 - Les courants de vent puissants que l'on rencontre \u00e0 tr\u00e8s haute altitude sont nomm\u00e9s\u00a0: <em><a href=\"annales_explications/explication_2675.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- jet-stream", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- jet-lag", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- tornade", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- rafale", "value": "d", "letter": "D", "is_correct": false}], "id": 15, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>16 - La brise de pente (montante) se forme en r\u00e9gion\u00a0: <em><a href=\"annales_explications/explication_2676.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- c\u00f4ti\u00e8re et de jour", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- c\u00f4ti\u00e8re et de nuit", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- montagneuse et de nuit", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- montagneuse et de jour", "value": "d", "letter": "D", "is_correct": true}], "id": 16, "correct_answer": "D"}, {"text": "<div class=\"q\"><p>17 - Sur la carte ci-dessous, la circulation du vent d\u00e9nomm\u00e9 Mistral correspond \u00e0 la fl\u00e8che\u00a0: <img alt=\"Carte de France l\u00e9gend\u00e9e par 4 vents\" src=\"imgs/m4-2017.gif\"/> <em><a href=\"annales_explications/explication_2677.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- 1", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- 2", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- 3", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- 4", "value": "d", "letter": "D", "is_correct": false}], "id": 17, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>18 - En plaine, dans les basses couches de l'atmosph\u00e8re, les turbulences sont g\u00e9n\u00e9r\u00e9es par\u00a0: <em><a href=\"annales_explications/explication_2678.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- l'onde", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- les trous d'air", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- la convection", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- le brouillard", "value": "d", "letter": "D", "is_correct": false}], "id": 18, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>19 - Le principal danger induit par le brouillard sur le vol est\u00a0: <em><a href=\"annales_explications/explication_2679.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- la formation de givrage possible en toutes saisons", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- la turbulence associ\u00e9e", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- la diminution de la visibilit\u00e9", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- le risque de foudroiement", "value": "d", "letter": "D", "is_correct": false}], "id": 19, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>20 - Parmi les \u00e9l\u00e9ments suivants, une cons\u00e9quence possible du givrage est\u00a0: <em><a href=\"annales_explications/explication_2680.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- gain d'altitude", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- alt\u00e9ration des profils a\u00e9rodynamiques", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- am\u00e9lioration des performances de l'a\u00e9ronef", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- diminution de la tra\u00een\u00e9e", "value": "d", "letter": "D", "is_correct": false}], "id": 20, "correct_answer": "B"}], "correctionUrl": "annales_corrections/2017_mto_corrections.html"};
+        
+        // DOM elements
+        const questionsContainer = document.getElementById('questions-container');
+        const progressBar = document.getElementById('progress-bar');
+        const resultsCard = document.getElementById('results-card');
+        const finalScore = document.getElementById('final-score');
+        
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = new Array(quizData.questions.length).fill(false);
+        
+        // Initialize the quiz
+        function initQuiz() {
+            // Create all question cards
+            quizData.questions.forEach((question, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+                questionCard.id = `question-${index}`;
+                
+                if (index === 0) {
+                    questionCard.classList.add('active');
+                }
+                
+                questionCard.innerHTML = `
+                    <div class="question-number">Question ${index + 1} / ${quizData.questions.length}</div>
+                    <div class="question-text">${question.text}</div>
+                    <div class="options-container">
+                        ${question.options.map((option, i) => `
+                            <button class="option-btn" data-value="${option.value}" data-letter="${option.letter}" data-correct="${option.is_correct}">
+                                <span class="option-prefix">${option.letter}.</span>
+                                <span class="option-text">${option.text}</span>
+                                <span class="feedback-icon"></span>
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div id="feedback-${index}" class="answer-feedback"></div>
+                    <div class="controls">
+                        ${index > 0 ? `<button class="btn btn-outline btn-prev" data-index="${index}">Précédent</button>` : `<div></div>`}
+                        <button class="btn btn-primary btn-next" data-index="${index}">Suivant</button>
+                    </div>
+                    ${question.text.includes('explications.php') || question.text.includes('annales_explications') ? 
+                        `<span class="explanation-note">Cliquez sur "<a href="#" class="explanation-link" target="_blank">Explication</a>" pour comprendre cette question.</span>` : 
+                        ``}
+                `;
+                
+                questionsContainer.appendChild(questionCard);
+                
+                // Add event listeners to options
+                const options = questionCard.querySelectorAll('.option-btn');
+                options.forEach(option => {
+                    option.addEventListener('click', function() {
+                        if (!answered[index]) {
+                            selectOption(this, index);
+                        }
+                    });
+                });
+                
+                // Add event listener for next button
+                const nextBtn = questionCard.querySelector('.btn-next');
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', function() {
+                        goToNextQuestion(index);
+                    });
+                }
+                
+                // Add event listener for prev button
+                const prevBtn = questionCard.querySelector('.btn-prev');
+                if (prevBtn) {
+                    prevBtn.addEventListener('click', function() {
+                        goToPrevQuestion(index);
+                    });
+                }
+            });
+            
+            updateProgressBar();
+        }
+        
+        function selectOption(optionElement, questionIndex) {
+            // If this question has already been answered, do nothing
+            if (answered[questionIndex]) {
+                return;
+            }
+            
+            // Mark this question as answered
+            answered[questionIndex] = true;
+            
+            // Remove selected class from all options in this question
+            const allOptions = optionElement.parentElement.querySelectorAll('.option-btn');
+            allOptions.forEach(opt => {
+                opt.classList.remove('selected', 'correct', 'incorrect');
+                opt.classList.add('disabled');
+            });
+            
+            // Add selected class to clicked option
+            optionElement.classList.add('selected');
+            
+            // Check if the answer is correct
+            const isCorrect = optionElement.dataset.correct === "true";
+            const correctOption = Array.from(allOptions).find(opt => opt.dataset.correct === "true");
+            const feedbackElement = document.getElementById(`feedback-${questionIndex}`);
+            
+            // Update score
+            if (isCorrect) {
+                score++;
+                optionElement.classList.add('correct');
+                optionElement.querySelector('.feedback-icon').innerHTML = "✓";
+                feedbackElement.textContent = "Correct!";
+                feedbackElement.classList.add('correct');
+                feedbackElement.classList.remove('incorrect');
+            } else {
+                optionElement.classList.add('incorrect');
+                optionElement.querySelector('.feedback-icon').innerHTML = "✗";
+                feedbackElement.textContent = `Incorrect. La bonne réponse est ${correctOption.dataset.letter}.`;
+                feedbackElement.classList.add('incorrect');
+                feedbackElement.classList.remove('correct');
+                
+                // Highlight the correct answer
+                correctOption.classList.add('correct');
+                correctOption.querySelector('.feedback-icon').innerHTML = "✓";
+            }
+            
+            // Show next button
+            const nextBtn = optionElement.parentElement.parentElement.querySelector('.btn-next');
+            nextBtn.style.display = 'block';
+        }
+        
+        function goToNextQuestion(currentIndex) {
+            if (currentIndex < quizData.questions.length - 1) {
+                document.getElementById(`question-${currentIndex}`).classList.remove('active');
+                document.getElementById(`question-${currentIndex + 1}`).classList.add('active');
+                currentQuestion = currentIndex + 1;
+                updateProgressBar();
+            } else {
+                showResults();
+            }
+        }
+        
+        function goToPrevQuestion(currentIndex) {
+            if (currentIndex > 0) {
+                document.getElementById(`question-${currentIndex}`).classList.remove('active');
+                document.getElementById(`question-${currentIndex - 1}`).classList.add('active');
+                currentQuestion = currentIndex - 1;
+                updateProgressBar();
+            }
+        }
+        
+        function updateProgressBar() {
+            const progressPercentage = ((currentQuestion + 1) / quizData.questions.length) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+        }
+        
+        function showResults() {
+            document.getElementById(`question-${quizData.questions.length - 1}`).classList.remove('active');
+            resultsCard.classList.add('active');
+            
+            // Update final score
+            finalScore.textContent = `Score: ${score}/${quizData.questions.length}`;
+        }
+        
+        // Initialize the quiz when page loads
+        document.addEventListener('DOMContentLoaded', initQuiz);
+    </script>
+</body>
+</html>

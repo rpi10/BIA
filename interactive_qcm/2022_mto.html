@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Météorologie et aérologie - (B.I.A. 2022)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --danger: #f94144;
+            --info: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #adb5bd;
+            --correct: #2dc653;
+            --incorrect: #e63946;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f2f5;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .quiz-title {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .quiz-subtitle {
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .question-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            display: none;
+        }
+        
+        .question-card.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .question-number {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .question-text img {
+            max-width: 100%;
+            height: auto;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        
+        .options-container {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .option-btn {
+            background-color: var(--light);
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            display: flex;
+            align-items: center;
+        }
+        
+        .option-btn:hover {
+            background-color: #e9ecef;
+            transform: translateY(-2px);
+        }
+        
+        .option-btn.selected {
+            border-color: var(--primary);
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+        
+        .option-btn.correct {
+            border-color: var(--correct);
+            background-color: rgba(45, 198, 83, 0.1);
+        }
+        
+        .option-btn.incorrect {
+            border-color: var(--incorrect);
+            background-color: rgba(230, 57, 70, 0.1);
+        }
+        
+        .option-btn.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        .option-prefix {
+            font-weight: 600;
+            color: var(--primary);
+            margin-right: 10px;
+            min-width: 25px;
+        }
+        
+        .option-btn.correct .option-prefix {
+            color: var(--correct);
+        }
+        
+        .option-btn.incorrect .option-prefix {
+            color: var(--incorrect);
+        }
+        
+        .feedback-icon {
+            margin-left: auto;
+            font-size: 1.2rem;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+        
+        .btn-next {
+            display: none;
+        }
+        
+        .results-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            display: none;
+        }
+        
+        .results-card.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        .results-card h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .results-card p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .celebration {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .explanation-note {
+            font-size: 0.9rem;
+            color: var(--info);
+            margin-top: 1rem;
+            display: block;
+        }
+        
+        .explanation-link {
+            color: var(--info);
+            text-decoration: none;
+        }
+        
+        .explanation-link:hover {
+            text-decoration: underline;
+        }
+        
+        .score-display {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 1rem 0;
+        }
+        
+        .answer-feedback {
+            font-size: 1rem;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .answer-feedback.correct {
+            background-color: rgba(45, 198, 83, 0.1);
+            color: var(--correct);
+            display: block;
+        }
+        
+        .answer-feedback.incorrect {
+            background-color: rgba(230, 57, 70, 0.1);
+            color: var(--incorrect);
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .quiz-title {
+                font-size: 1.75rem;
+            }
+            
+            .question-text {
+                font-size: 1.1rem;
+            }
+            
+            .option-btn {
+                padding: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="quiz-header">
+            <h1 class="quiz-title">Météorologie et aérologie</h1>
+            <h2 class="quiz-subtitle">(B.I.A. 2022)</h2>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+        </div>
+        
+        <div id="questions-container">
+            <!-- Questions will be inserted here by JavaScript -->
+        </div>
+        
+        <div class="results-card" id="results-card">
+            <div class="celebration">🎉</div>
+            <h2>Mission Accomplie!</h2>
+            <p>Vous avez terminé le QCM.</p>
+            <div id="final-score" class="score-display">Score: 0/0</div>
+            <a href="annales_corrections/2022_mto_corrections.html" class="btn btn-primary">Voir la correction complète</a>
+        </div>
+    </div>
+    
+    <script>
+        // Quiz data
+        const quizData = {"title": "M\u00e9t\u00e9orologie et a\u00e9rologie", "subtitle": "(B.I.A. 2022)", "questions": [{"text": "<div class=\"q\"><p>1 - Un front occlus est repr\u00e9sent\u00e9 sur les cartes m\u00e9t\u00e9orologiques par\u00a0: <em><a href=\"annales_explications/explication_3393.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- une ligne avec des demi-cercles accol\u00e9s \u00e0 elle", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- une ligne avec des triangles accol\u00e9s \u00e0 elle", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- une ligne avec une alternance de demi-cercles et de triangles", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- une ligne avec des dessins de nuages accol\u00e9s", "value": "d", "letter": "D", "is_correct": false}], "id": 1, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>2 - Les nuages plus particuli\u00e8rement recherch\u00e9s pour pratiquer le vol \u00e0 voile sont\u00a0: <em><a href=\"annales_explications/explication_3394.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- les cumulonimbus", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- les altos cirrus", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- les cumulus", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- les nimbostratus", "value": "d", "letter": "D", "is_correct": false}], "id": 2, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>3 - La visibilit\u00e9 en cas de brume\u00a0: <em><a href=\"annales_explications/explication_3395.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- est comprise entre 1 kilom\u00e8tre et 30 secondes de vol", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- est inf\u00e9rieur \u00e0 1 kilom\u00e8tre", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- est comprise entre 1 et 5 kilom\u00e8tres", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- peut aller de 0 \u00e0 5 kilom\u00e8tres", "value": "d", "letter": "D", "is_correct": false}], "id": 3, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>4 - Sur la carte TEMSI, on peut lire une validit\u00e9 au 14/10/2019\u00a015 UTC. Sachant que le 14 octobre 2019, la France \u00e9tait en \u00ab\u00a0heure d\u2019\u00e9t\u00e9\u00a0\u00bb, \u00e0 quelle heure l\u00e9gale correspond cette pr\u00e9vision\u00a0? <em><a href=\"annales_explications/explication_3396.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- 13h", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- 14h", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- 16h", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- 17h", "value": "d", "letter": "D", "is_correct": true}], "id": 4, "correct_answer": "D"}, {"text": "<div class=\"q\"><p>5 - Les fronts visibles sur la carte TEMSI sont des fronts\u00a0: <em><a href=\"annales_explications/explication_3397.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- occlus", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- froids", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- chauds", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- ti\u00e8des", "value": "d", "letter": "D", "is_correct": false}], "id": 5, "correct_answer": "B"}, {"text": "<div class=\"q\"><p>6 - Compte tenu des observations des pr\u00e9cipitations et des impacts de foudre, on peut conclure que l\u2019atmosph\u00e8re au niveau du front \u00e9tudi\u00e9 est\u00a0: <em><a href=\"annales_explications/explication_3398.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- chaude", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- stable", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- instable", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- froide", "value": "d", "letter": "D", "is_correct": false}], "id": 6, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>7 - Au niveau du front \u00e9tudi\u00e9, on peut dire que\u00a0: <em><a href=\"annales_explications/explication_3399.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- de l\u2019air chaud passe au-dessus de l\u2019air froid qui le pr\u00e9c\u00e8de", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- de l\u2019air froid passe au-dessus de l\u2019air chaud qui le pr\u00e9c\u00e8de", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- de l\u2019air chaud passe en-dessous de l\u2019air froid qui le pr\u00e9c\u00e8de", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- de l\u2019air froid passe en-dessous de l\u2019air chaud qui le pr\u00e9c\u00e8de", "value": "d", "letter": "D", "is_correct": true}], "id": 7, "correct_answer": "D"}, {"text": "<div class=\"q\"><p>8 - Les orages observ\u00e9s se produisent\u00a0: <em><a href=\"annales_explications/explication_3400.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- dans la zone chaude", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- dans la traine, dite active", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- dans la traine, dite inactive", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- dans l\u2019occlusion", "value": "d", "letter": "D", "is_correct": false}], "id": 8, "correct_answer": "B"}, {"text": "<div class=\"q\"><p>9 - La tropopause\u00a0: <em><a href=\"annales_explications/explication_3401.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- se trouve g\u00e9n\u00e9ralement \u00e0 une altitude plus \u00e9lev\u00e9e aux p\u00f4les qu\u2019\u00e0 l\u2019\u00e9quateur", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- se trouve g\u00e9n\u00e9ralement \u00e0 une altitude plus \u00e9lev\u00e9e \u00e0 l\u2019\u00e9quateur qu\u2019aux p\u00f4les", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- est toujours situ\u00e9e \u00e0 la limite sup\u00e9rieure des nuages", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- est toujours situ\u00e9e \u00e0 une altitude de 12000 m\u00e8tres", "value": "d", "letter": "D", "is_correct": false}], "id": 9, "correct_answer": "B"}, {"text": "<div class=\"q\"><p>10 - En atmosph\u00e8re standard, le gradient de temp\u00e9rature en s\u2019\u00e9levant en altitude dans les basses couches est de\u00a0: <em><a href=\"annales_explications/explication_3402.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- +2\u00a0\u00b0C par 1000 pieds", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- -2\u00a0\u00b0C par 1000 pieds", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- -2\u00a0\u00b0C par 1000 m\u00e8tres", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- +2\u00a0\u00b0C par 1000 m\u00e8tres", "value": "d", "letter": "D", "is_correct": false}], "id": 10, "correct_answer": "B"}, {"text": "<div class=\"q\"><p>11 - Dans le dossier m\u00e9t\u00e9orologique du pilote, on trouve un certain nombre de messages. Parmi eux le METAR est un message\u00a0: <em><a href=\"annales_explications/explication_3403.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- d\u2019observation du temps en un lieu donn\u00e9", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- de pr\u00e9vision du temps en un lieu donn\u00e9", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- de pr\u00e9vision du temps sous forme d\u2019une carte", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- d\u2019observation du temps sous forme de carte", "value": "d", "letter": "D", "is_correct": false}], "id": 11, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>12 - Le Mistral est un vent\u00a0: <em><a href=\"annales_explications/explication_3404.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- du Sud sur Marseille", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- du Sud-Ouest qui souffle sur le Languedoc", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- du Nord-Ouest qui souffle sur le Languedoc", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- du Nord qui souffle dans la vall\u00e9e du Rh\u00f4ne", "value": "d", "letter": "D", "is_correct": true}], "id": 12, "correct_answer": "D"}, {"text": "<div class=\"q\"><p>13 - La brise de vall\u00e9e descendante s\u2019\u00e9tablit lorsque les versants montagneux\u00a0: <em><a href=\"annales_explications/explication_3405.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- le jour, se r\u00e9chauffent moins vite que les fonds des vall\u00e9es", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- le jour, se r\u00e9chauffent plus vite que les fonds des vall\u00e9es", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- la nuit, se refroidissent plus vite que les fonds des vall\u00e9es", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- la nuit, se refroidissent moins vite que les fonds des vall\u00e9es", "value": "d", "letter": "D", "is_correct": false}], "id": 13, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>14 - Lorsque de la pluie surfondue touche le sol froid, il se forme\u00a0: <em><a href=\"annales_explications/explication_3406.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- de la gr\u00eale", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- du brouillard", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- de la neige", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- du verglas", "value": "d", "letter": "D", "is_correct": true}], "id": 14, "correct_answer": "D"}, {"text": "<div class=\"q\"><p>15 - Le vent dans l\u2019h\u00e9misph\u00e8re nord\u00a0: <em><a href=\"annales_explications/explication_3407.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- vient de la gauche quand on se dirige de la d\u00e9pression vers l\u2019anticyclone", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- vient de la droite quand on se dirige de l\u2019anticyclone vers la d\u00e9pression", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- est plus fort quand les isobares sont rapproch\u00e9s", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- est moins fort lorsqu\u2019il pleut", "value": "d", "letter": "D", "is_correct": false}], "id": 15, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>16 - En plaine, les v\u00e9livoles profitent d'un ph\u00e9nom\u00e8ne m\u00e9t\u00e9orologique pour gagner de l'altitude. Il s'agit des\u00a0: <em><a href=\"annales_explications/explication_3408.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- brises de vall\u00e9e", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- ascendances", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- des turbulences", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- des cisaillements des couches d'air", "value": "d", "letter": "D", "is_correct": false}], "id": 16, "correct_answer": "B"}, {"text": "<div class=\"q\"><p>17 - En atmosph\u00e8re standard, \u00e0 1000 ft, la temp\u00e9rature sera d\u2019environ\u00a0: <em><a href=\"annales_explications/explication_3409.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- 8,5\u00a0\u00b0C", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- 13\u00a0\u00b0C", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- 0\u00a0\u00b0C", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- -3\u00a0\u00b0C", "value": "d", "letter": "D", "is_correct": false}], "id": 17, "correct_answer": "B"}, {"text": "<div class=\"q\"><p>18 - L\u2019atmosph\u00e8re est principalement compos\u00e9e\u00a0: <em><a href=\"annales_explications/explication_3410.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- de dioxyg\u00e8ne", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- de diazote", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- de gaz carbonique", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- de vapeur d\u2019eau", "value": "d", "letter": "D", "is_correct": false}], "id": 18, "correct_answer": "B"}, {"text": "<div class=\"q\"><p>19 - En atmosph\u00e8re standard, la masse volumique de l\u2019air est de\u00a0: <em><a href=\"annales_explications/explication_3411.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- 1225 kg/m3", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- 1,225 g/m3", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- 1,225 kg/m3", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- 122,5 g/m3", "value": "d", "letter": "D", "is_correct": false}], "id": 19, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>20 - L\u2019\u00e9paisseur de l\u2019atmosph\u00e8re (limite de Karman) est de\u00a0: <em><a href=\"annales_explications/explication_3412.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- 100 km", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- 10\u00a0000 km", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- 100\u00a0000 km", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- 30 km", "value": "d", "letter": "D", "is_correct": false}], "id": 20, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>21 - Lorsque le vent est fort au sol\u00a0: <em><a href=\"annales_explications/explication_3413.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- il y a peu de turbulences dans les basses couches de l\u2019atmosph\u00e8re", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- le ciel va syst\u00e9matiquement se d\u00e9gager", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- il est nul en altitude", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- des turbulences dues aux imperfections du sol et aux obstacles se d\u00e9veloppent en basses couches", "value": "d", "letter": "D", "is_correct": true}], "id": 21, "correct_answer": "D"}, {"text": "<div class=\"q\"><p>22 - Des mouvements al\u00e9atoires de petite \u00e9chelle qui perturbent un flux d\u2019air bien \u00e9tabli sont appel\u00e9s\u00a0: <em><a href=\"annales_explications/explication_3414.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- des cyclones", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- du cisaillement et de la turbulence", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- des ascendances", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- des mouvements laminaires", "value": "d", "letter": "D", "is_correct": false}], "id": 22, "correct_answer": "B"}], "correctionUrl": "annales_corrections/2022_mto_corrections.html"};
+        
+        // DOM elements
+        const questionsContainer = document.getElementById('questions-container');
+        const progressBar = document.getElementById('progress-bar');
+        const resultsCard = document.getElementById('results-card');
+        const finalScore = document.getElementById('final-score');
+        
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = new Array(quizData.questions.length).fill(false);
+        
+        // Initialize the quiz
+        function initQuiz() {
+            // Create all question cards
+            quizData.questions.forEach((question, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+                questionCard.id = `question-${index}`;
+                
+                if (index === 0) {
+                    questionCard.classList.add('active');
+                }
+                
+                questionCard.innerHTML = `
+                    <div class="question-number">Question ${index + 1} / ${quizData.questions.length}</div>
+                    <div class="question-text">${question.text}</div>
+                    <div class="options-container">
+                        ${question.options.map((option, i) => `
+                            <button class="option-btn" data-value="${option.value}" data-letter="${option.letter}" data-correct="${option.is_correct}">
+                                <span class="option-prefix">${option.letter}.</span>
+                                <span class="option-text">${option.text}</span>
+                                <span class="feedback-icon"></span>
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div id="feedback-${index}" class="answer-feedback"></div>
+                    <div class="controls">
+                        ${index > 0 ? `<button class="btn btn-outline btn-prev" data-index="${index}">Précédent</button>` : `<div></div>`}
+                        <button class="btn btn-primary btn-next" data-index="${index}">Suivant</button>
+                    </div>
+                    ${question.text.includes('explications.php') || question.text.includes('annales_explications') ? 
+                        `<span class="explanation-note">Cliquez sur "<a href="#" class="explanation-link" target="_blank">Explication</a>" pour comprendre cette question.</span>` : 
+                        ``}
+                `;
+                
+                questionsContainer.appendChild(questionCard);
+                
+                // Add event listeners to options
+                const options = questionCard.querySelectorAll('.option-btn');
+                options.forEach(option => {
+                    option.addEventListener('click', function() {
+                        if (!answered[index]) {
+                            selectOption(this, index);
+                        }
+                    });
+                });
+                
+                // Add event listener for next button
+                const nextBtn = questionCard.querySelector('.btn-next');
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', function() {
+                        goToNextQuestion(index);
+                    });
+                }
+                
+                // Add event listener for prev button
+                const prevBtn = questionCard.querySelector('.btn-prev');
+                if (prevBtn) {
+                    prevBtn.addEventListener('click', function() {
+                        goToPrevQuestion(index);
+                    });
+                }
+            });
+            
+            updateProgressBar();
+        }
+        
+        function selectOption(optionElement, questionIndex) {
+            // If this question has already been answered, do nothing
+            if (answered[questionIndex]) {
+                return;
+            }
+            
+            // Mark this question as answered
+            answered[questionIndex] = true;
+            
+            // Remove selected class from all options in this question
+            const allOptions = optionElement.parentElement.querySelectorAll('.option-btn');
+            allOptions.forEach(opt => {
+                opt.classList.remove('selected', 'correct', 'incorrect');
+                opt.classList.add('disabled');
+            });
+            
+            // Add selected class to clicked option
+            optionElement.classList.add('selected');
+            
+            // Check if the answer is correct
+            const isCorrect = optionElement.dataset.correct === "true";
+            const correctOption = Array.from(allOptions).find(opt => opt.dataset.correct === "true");
+            const feedbackElement = document.getElementById(`feedback-${questionIndex}`);
+            
+            // Update score
+            if (isCorrect) {
+                score++;
+                optionElement.classList.add('correct');
+                optionElement.querySelector('.feedback-icon').innerHTML = "✓";
+                feedbackElement.textContent = "Correct!";
+                feedbackElement.classList.add('correct');
+                feedbackElement.classList.remove('incorrect');
+            } else {
+                optionElement.classList.add('incorrect');
+                optionElement.querySelector('.feedback-icon').innerHTML = "✗";
+                feedbackElement.textContent = `Incorrect. La bonne réponse est ${correctOption.dataset.letter}.`;
+                feedbackElement.classList.add('incorrect');
+                feedbackElement.classList.remove('correct');
+                
+                // Highlight the correct answer
+                correctOption.classList.add('correct');
+                correctOption.querySelector('.feedback-icon').innerHTML = "✓";
+            }
+            
+            // Show next button
+            const nextBtn = optionElement.parentElement.parentElement.querySelector('.btn-next');
+            nextBtn.style.display = 'block';
+        }
+        
+        function goToNextQuestion(currentIndex) {
+            if (currentIndex < quizData.questions.length - 1) {
+                document.getElementById(`question-${currentIndex}`).classList.remove('active');
+                document.getElementById(`question-${currentIndex + 1}`).classList.add('active');
+                currentQuestion = currentIndex + 1;
+                updateProgressBar();
+            } else {
+                showResults();
+            }
+        }
+        
+        function goToPrevQuestion(currentIndex) {
+            if (currentIndex > 0) {
+                document.getElementById(`question-${currentIndex}`).classList.remove('active');
+                document.getElementById(`question-${currentIndex - 1}`).classList.add('active');
+                currentQuestion = currentIndex - 1;
+                updateProgressBar();
+            }
+        }
+        
+        function updateProgressBar() {
+            const progressPercentage = ((currentQuestion + 1) / quizData.questions.length) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+        }
+        
+        function showResults() {
+            document.getElementById(`question-${quizData.questions.length - 1}`).classList.remove('active');
+            resultsCard.classList.add('active');
+            
+            // Update final score
+            finalScore.textContent = `Score: ${score}/${quizData.questions.length}`;
+        }
+        
+        // Initialize the quiz when page loads
+        document.addEventListener('DOMContentLoaded', initQuiz);
+    </script>
+</body>
+</html>

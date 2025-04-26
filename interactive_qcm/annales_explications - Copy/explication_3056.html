@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explication BIA</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --danger: #f94144;
+            --info: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #adb5bd;
+            --correct: #2dc653;
+            --incorrect: #e63946;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            background-color: #f0f2f5;
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .question-card {
+            margin-bottom: 2rem;
+        }
+        
+        .question-title {
+            color: var(--primary);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--light);
+            padding-bottom: 0.5rem;
+        }
+        
+        .question-text {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .question-text img {
+            max-width: 100%;
+            height: auto;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        
+        .options-container {
+            display: grid;
+            gap: 0.7rem;
+            margin-bottom: 2rem;
+        }
+        
+        .option {
+            padding: 0.7rem;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .option.correct {
+            border-color: var(--correct);
+            background-color: rgba(45, 198, 83, 0.1);
+        }
+        
+        .explanation-section {
+            margin-top: 2rem;
+        }
+        
+        .explanation-title {
+            color: var(--info);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--light);
+            padding-bottom: 0.5rem;
+        }
+        
+        .explanation-content {
+            background-color: rgba(72, 149, 239, 0.05);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--info);
+        }
+        
+        .explanation-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .explanation-content strong {
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="question-card">
+            <h2 class="question-title">Question</h2>
+            <div class="question-text">
+                Lors d’un virage à 60° d’inclinaison, à altitude constante, le poids apparent est :
+                
+            </div>
+            <div class="options-container">
+                <div class="option">A- égal au poids réel</div><div class="option correct">B- égal à 2 fois le poids réel</div><div class="option">C- égal à 1,15 fois le poids réel</div><div class="option">D- inférieur au poids réel</div>
+            </div>
+        </div>
+        
+        <div class="explanation-section">
+            <h2 class="explanation-title">Explication</h2>
+            <div class="explanation-content">
+                Soit n le facteur de charge.<br/>
+
+Soit θ l'inclinaison de l'avion.<br/>
+
+Soit P le poids réel de l'avion.<br/>
+
+Soit Pa le poids apparent de l'avion.<br/>
+<br/>
+
+Nous avons la relation : n = 1 / cos(θ)<br/>
+<br/>
+
+Application numérique : n = 1 / cos(60°) = 1 / 0.5 = 2<br/>
+<br/>
+
+Or, le poids apparent ressenti par les occupants de l'avion est proportionnel au facteur de charge. Cela signifie que le poids apparent est :<br/>
+<br/>
+
+Pa = n × P = 2 × P<br/>
+<br/>
+
+C'est donc le double du poids.
+            </div>
+        </div>
+    </div>
+</body>
+</html>

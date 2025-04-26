@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation, réglementation, sécurité des vols - (B.I.A. 2015)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --danger: #f94144;
+            --info: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #adb5bd;
+            --correct: #2dc653;
+            --incorrect: #e63946;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f2f5;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .quiz-title {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .quiz-subtitle {
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .question-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            display: none;
+        }
+        
+        .question-card.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .question-number {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .question-text img {
+            max-width: 100%;
+            height: auto;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        
+        .options-container {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .option-btn {
+            background-color: var(--light);
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            display: flex;
+            align-items: center;
+        }
+        
+        .option-btn:hover {
+            background-color: #e9ecef;
+            transform: translateY(-2px);
+        }
+        
+        .option-btn.selected {
+            border-color: var(--primary);
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+        
+        .option-btn.correct {
+            border-color: var(--correct);
+            background-color: rgba(45, 198, 83, 0.1);
+        }
+        
+        .option-btn.incorrect {
+            border-color: var(--incorrect);
+            background-color: rgba(230, 57, 70, 0.1);
+        }
+        
+        .option-btn.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        .option-prefix {
+            font-weight: 600;
+            color: var(--primary);
+            margin-right: 10px;
+            min-width: 25px;
+        }
+        
+        .option-btn.correct .option-prefix {
+            color: var(--correct);
+        }
+        
+        .option-btn.incorrect .option-prefix {
+            color: var(--incorrect);
+        }
+        
+        .feedback-icon {
+            margin-left: auto;
+            font-size: 1.2rem;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+        
+        .btn-next {
+            display: none;
+        }
+        
+        .results-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            display: none;
+        }
+        
+        .results-card.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        .results-card h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .results-card p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .celebration {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .explanation-note {
+            font-size: 0.9rem;
+            color: var(--info);
+            margin-top: 1rem;
+            display: block;
+        }
+        
+        .explanation-link {
+            color: var(--info);
+            text-decoration: none;
+        }
+        
+        .explanation-link:hover {
+            text-decoration: underline;
+        }
+        
+        .score-display {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 1rem 0;
+        }
+        
+        .answer-feedback {
+            font-size: 1rem;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .answer-feedback.correct {
+            background-color: rgba(45, 198, 83, 0.1);
+            color: var(--correct);
+            display: block;
+        }
+        
+        .answer-feedback.incorrect {
+            background-color: rgba(230, 57, 70, 0.1);
+            color: var(--incorrect);
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .quiz-title {
+                font-size: 1.75rem;
+            }
+            
+            .question-text {
+                font-size: 1.1rem;
+            }
+            
+            .option-btn {
+                padding: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="quiz-header">
+            <h1 class="quiz-title">Navigation, réglementation, sécurité des vols</h1>
+            <h2 class="quiz-subtitle">(B.I.A. 2015)</h2>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+        </div>
+        
+        <div id="questions-container">
+            <!-- Questions will be inserted here by JavaScript -->
+        </div>
+        
+        <div class="results-card" id="results-card">
+            <div class="celebration">🎉</div>
+            <h2>Mission Accomplie!</h2>
+            <p>Vous avez terminé le QCM.</p>
+            <div id="final-score" class="score-display">Score: 0/0</div>
+            <a href="annales_corrections/2015_nrs_corrections.html" class="btn btn-primary">Voir la correction complète</a>
+        </div>
+    </div>
+    
+    <script>
+        // Quiz data
+        const quizData = {"title": "Navigation, r\u00e9glementation, s\u00e9curit\u00e9 des vols", "subtitle": "(B.I.A. 2015)", "questions": [{"text": "<div class=\"q\"><p>1 - Comment est appel\u00e9 l'angle entre le nord vrai et le nord magn\u00e9tique\u00a0? <em><a href=\"annales_explications/explication_2481.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- d\u00e9clinaison magn\u00e9tique", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- d\u00e9viation", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- erreur de parallaxe", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- inclinaison magn\u00e9tique", "value": "d", "letter": "D", "is_correct": false}], "id": 1, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>2 - Sur une carte, comment sont appel\u00e9es les lignes joignant les points d'\u00e9gale d\u00e9clinaison magn\u00e9tique\u00a0? <em><a href=\"annales_explications/explication_2482.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- isogones", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- isotopes", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- isobares", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- isothermes", "value": "d", "letter": "D", "is_correct": false}], "id": 2, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>3 - Quelle est la correspondance d'un mille nautique dans le syst\u00e8me m\u00e9trique\u00a0? <em><a href=\"annales_explications/explication_2483.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- 1\u00a0528 m\u00e8tres", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- 1\u00a0609 m\u00e8tres", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- 0,8 km\u00b2", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- 1,852 km", "value": "d", "letter": "D", "is_correct": true}], "id": 3, "correct_answer": "D"}, {"text": "<div class=\"q\"><p>4 - Sur une carte OACI au 1/500\u00a0000, la distance mesur\u00e9e entre deux points est de 14 cm. Quelle est la distance qui les s\u00e9pare r\u00e9ellement\u00a0? <em><a href=\"annales_explications/explication_2484.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- 14 km", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- 70 km", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- 14 Nm", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- 28 Nm", "value": "d", "letter": "D", "is_correct": false}], "id": 4, "correct_answer": "B"}, {"text": "<div class=\"q\"><p>5 - Un avion vol de Brest vers Strasbourg. Le pilote doit \u00eatre vigilant au fait que le soleil se couchera \u00e0 Strasbourg\u00a0: <em><a href=\"annales_explications/explication_2485.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- \u00e0 la m\u00eame heure que Brest", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- plus tard qu'\u00e0 Brest", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- plus t\u00f4t qu'\u00e0 Brest", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- la r\u00e9ponse d\u00e9pend de la saison", "value": "d", "letter": "D", "is_correct": false}], "id": 5, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>6 - En combien de temps la terre tourne-t-elle sur elle-m\u00eame de 30\u00b0\u00a0? <em><a href=\"annales_explications/explication_2486.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- 2 heures", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- 300 minutes", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- 12 heures", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- 30 minutes", "value": "d", "letter": "D", "is_correct": false}], "id": 6, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>7 - Sur une fr\u00e9quence radio, comment s'identifiera un avion immatricul\u00e9 F-GSBC\u00a0? <em><a href=\"annales_explications/explication_2487.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- France - Golf - Sierra - Bravo - Charlie", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- Fran\u00e7ois - Gabriel - Solange - Bernard - Charles", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- Fox Trot - Golf - Sierra - Bravo - Charlie", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- Bravo - Charlie", "value": "d", "letter": "D", "is_correct": false}], "id": 7, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>8 - En quoi consiste le cheminement\u00a0? <em><a href=\"annales_explications/explication_2488.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- suivre les indications d'un GPS", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- suivre le chemin indiqu\u00e9 par le contr\u00f4le a\u00e9rien", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- suivre des rep\u00e8res sol caract\u00e9ristiques", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- suivre uniquement les voies de chemins de fer", "value": "d", "letter": "D", "is_correct": false}], "id": 8, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>9 - A quoi sert le transpondeur dans un a\u00e9ronef\u00a0? <em><a href=\"annales_explications/explication_2489.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- recevoir les informations m\u00e9t\u00e9orologiques", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- voler sans visibilit\u00e9", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- r\u00e9pondre automatiquement aux questions des contr\u00f4leurs", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- identifier l'a\u00e9ronef et le suivre au radar sol", "value": "d", "letter": "D", "is_correct": true}], "id": 9, "correct_answer": "D"}, {"text": "<div class=\"q\"><p>10 - Comment sera num\u00e9rot\u00e9e une piste d'orientation magn\u00e9tique de 104\u00a0\u00b0\u00a0? <em><a href=\"annales_explications/explication_2490.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- 11", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- 10", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- 04", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- 104", "value": "d", "letter": "D", "is_correct": false}], "id": 10, "correct_answer": "B"}, {"text": "<div class=\"q\"><p>11 - Que permet d'indiquer la manche \u00e0 air sur un a\u00e9rodrome\u00a0? <em><a href=\"annales_explications/explication_2491.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- le num\u00e9ro de la piste en service", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- la temp\u00e9rature de l'air", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- le sens et la vitesse du vent", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- le sens d'atterrissage, dos au vent", "value": "d", "letter": "D", "is_correct": false}], "id": 11, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>12 - Quelle est la r\u00e9f\u00e9rence altim\u00e9trique d'un niveau de vol (FL = Flight Level)\u00a0? <em><a href=\"annales_explications/explication_2492.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- la pression GPS", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- la pression au niveau de la mer", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- la pression au niveau du sol", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- la pression 1013 hPa", "value": "d", "letter": "D", "is_correct": true}], "id": 12, "correct_answer": "D"}, {"text": "<div class=\"q\"><p>13 - Quel est la r\u00e8gle quand un a\u00e9ronef souhaite en d\u00e9passer un autre\u00a0? <em><a href=\"annales_explications/explication_2493.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- d\u00e9passer par la gauche", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- d\u00e9passer par la droite", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- d\u00e9passer par au-dessus", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- d\u00e9passer par en-dessous", "value": "d", "letter": "D", "is_correct": false}], "id": 13, "correct_answer": "B"}, {"text": "<div class=\"q\"><p>14 - Quelle est la position d'un avion qui vole en circuit de piste parall\u00e8lement \u00e0 la piste\u00a0? <em><a href=\"annales_explications/explication_2494.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- \u00e9tape de base", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- vent debout", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- vent arri\u00e8re", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- vent de travers", "value": "d", "letter": "D", "is_correct": false}], "id": 14, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>15 - A quel type de zone correspond une zone identifi\u00e9e par la lettre \u00ab\u00a0P\u00a0\u00bb\u00a0? <em><a href=\"annales_explications/explication_2495.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- une zone dont la p\u00e9n\u00e9tration est interdite", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- une zone dont la p\u00e9n\u00e9tration est r\u00e9serv\u00e9e aux vols professionnels", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- une zone dont la p\u00e9n\u00e9tration est dangereuse", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- une zone dont la p\u00e9n\u00e9tration est prot\u00e9g\u00e9e par une couverture radar", "value": "d", "letter": "D", "is_correct": false}], "id": 15, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>16 - Un a\u00e9ronef vole pendant 6 minutes \u00e0 une vitesse sol de 120 kt. Quelle distance a-t-il parcourue\u00a0? <em><a href=\"annales_explications/explication_2496.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- 22 km", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- 22 Nm", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- 20 Nm", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- 12 Nm", "value": "d", "letter": "D", "is_correct": true}], "id": 16, "correct_answer": "D"}, {"text": "<div class=\"q\"><p>17 - Que peut-on dire de la vitesse sol (Vs) par vent de face\u00a0? <em><a href=\"annales_explications/explication_2497.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- elle est sup\u00e9rieure \u00e0 la vitesse propre (VP) de l'a\u00e9ronef", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- elle est inf\u00e9rieure \u00e0 la vitesse propre (VP) de l'a\u00e9ronef", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- elle est \u00e9gale \u00e0 la vitesse propre (VP) de l'a\u00e9ronef", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- elle n'est pas influenc\u00e9e par le vent mais par la route suivie", "value": "d", "letter": "D", "is_correct": false}], "id": 17, "correct_answer": "B"}, {"text": "<div class=\"q\"><p>18 - Parmi les causes d'accident suivantes, quelle est celle qui est la plus souvent observ\u00e9e en aviation l\u00e9g\u00e8re\u00a0? <em><a href=\"annales_explications/explication_2498.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- la trop grande force du vent", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- la panne m\u00e9canique", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- la consommation de substances toxiques (alcool, m\u00e9dicaments, drogues, etc.)", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- l'obstination \u00e0 vouloir atteindre la destination", "value": "d", "letter": "D", "is_correct": true}], "id": 18, "correct_answer": "D"}, {"text": "<div class=\"q\"><p>19 - Qu'est-ce que l'hypoxie\u00a0? <em><a href=\"annales_explications/explication_2499.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- le d\u00e9faut d'oxyg\u00e9nation d\u00fb \u00e0 l'altitude", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- la pr\u00e9sence d'alcool dans l'organisme \u00e0 faible dose", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- l'insuffisance respiratoire due aux acc\u00e9l\u00e9rations et d\u00e9c\u00e9l\u00e9rations", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- la suffocation due au stress du pilote", "value": "d", "letter": "D", "is_correct": false}], "id": 19, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>20 - Qu'est-ce que l'effet tunnel\u00a0? <em><a href=\"annales_explications/explication_2500.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- un ph\u00e9nom\u00e8ne m\u00e9t\u00e9orologique d\u00fb \u00e0 un couloir de nuages", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- la concentration du pilote sur un nombre limit\u00e9 d'informations ou d'observations", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- le fait pour un a\u00e9ronef d'\u00eatre pris entre deux couches nuageuses", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- le fait pour un pilote d'\u00eatre d\u00e9sorient\u00e9 en raison de l'absence de rep\u00e8re visuel autre qu'une faible lumi\u00e8re au travers du nuage (Halo)", "value": "d", "letter": "D", "is_correct": false}], "id": 20, "correct_answer": "B"}], "correctionUrl": "annales_corrections/2015_nrs_corrections.html"};
+        
+        // DOM elements
+        const questionsContainer = document.getElementById('questions-container');
+        const progressBar = document.getElementById('progress-bar');
+        const resultsCard = document.getElementById('results-card');
+        const finalScore = document.getElementById('final-score');
+        
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = new Array(quizData.questions.length).fill(false);
+        
+        // Initialize the quiz
+        function initQuiz() {
+            // Create all question cards
+            quizData.questions.forEach((question, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+                questionCard.id = `question-${index}`;
+                
+                if (index === 0) {
+                    questionCard.classList.add('active');
+                }
+                
+                questionCard.innerHTML = `
+                    <div class="question-number">Question ${index + 1} / ${quizData.questions.length}</div>
+                    <div class="question-text">${question.text}</div>
+                    <div class="options-container">
+                        ${question.options.map((option, i) => `
+                            <button class="option-btn" data-value="${option.value}" data-letter="${option.letter}" data-correct="${option.is_correct}">
+                                <span class="option-prefix">${option.letter}.</span>
+                                <span class="option-text">${option.text}</span>
+                                <span class="feedback-icon"></span>
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div id="feedback-${index}" class="answer-feedback"></div>
+                    <div class="controls">
+                        ${index > 0 ? `<button class="btn btn-outline btn-prev" data-index="${index}">Précédent</button>` : `<div></div>`}
+                        <button class="btn btn-primary btn-next" data-index="${index}">Suivant</button>
+                    </div>
+                    ${question.text.includes('explications.php') || question.text.includes('annales_explications') ? 
+                        `<span class="explanation-note">Cliquez sur "<a href="#" class="explanation-link" target="_blank">Explication</a>" pour comprendre cette question.</span>` : 
+                        ``}
+                `;
+                
+                questionsContainer.appendChild(questionCard);
+                
+                // Add event listeners to options
+                const options = questionCard.querySelectorAll('.option-btn');
+                options.forEach(option => {
+                    option.addEventListener('click', function() {
+                        if (!answered[index]) {
+                            selectOption(this, index);
+                        }
+                    });
+                });
+                
+                // Add event listener for next button
+                const nextBtn = questionCard.querySelector('.btn-next');
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', function() {
+                        goToNextQuestion(index);
+                    });
+                }
+                
+                // Add event listener for prev button
+                const prevBtn = questionCard.querySelector('.btn-prev');
+                if (prevBtn) {
+                    prevBtn.addEventListener('click', function() {
+                        goToPrevQuestion(index);
+                    });
+                }
+            });
+            
+            updateProgressBar();
+        }
+        
+        function selectOption(optionElement, questionIndex) {
+            // If this question has already been answered, do nothing
+            if (answered[questionIndex]) {
+                return;
+            }
+            
+            // Mark this question as answered
+            answered[questionIndex] = true;
+            
+            // Remove selected class from all options in this question
+            const allOptions = optionElement.parentElement.querySelectorAll('.option-btn');
+            allOptions.forEach(opt => {
+                opt.classList.remove('selected', 'correct', 'incorrect');
+                opt.classList.add('disabled');
+            });
+            
+            // Add selected class to clicked option
+            optionElement.classList.add('selected');
+            
+            // Check if the answer is correct
+            const isCorrect = optionElement.dataset.correct === "true";
+            const correctOption = Array.from(allOptions).find(opt => opt.dataset.correct === "true");
+            const feedbackElement = document.getElementById(`feedback-${questionIndex}`);
+            
+            // Update score
+            if (isCorrect) {
+                score++;
+                optionElement.classList.add('correct');
+                optionElement.querySelector('.feedback-icon').innerHTML = "✓";
+                feedbackElement.textContent = "Correct!";
+                feedbackElement.classList.add('correct');
+                feedbackElement.classList.remove('incorrect');
+            } else {
+                optionElement.classList.add('incorrect');
+                optionElement.querySelector('.feedback-icon').innerHTML = "✗";
+                feedbackElement.textContent = `Incorrect. La bonne réponse est ${correctOption.dataset.letter}.`;
+                feedbackElement.classList.add('incorrect');
+                feedbackElement.classList.remove('correct');
+                
+                // Highlight the correct answer
+                correctOption.classList.add('correct');
+                correctOption.querySelector('.feedback-icon').innerHTML = "✓";
+            }
+            
+            // Show next button
+            const nextBtn = optionElement.parentElement.parentElement.querySelector('.btn-next');
+            nextBtn.style.display = 'block';
+        }
+        
+        function goToNextQuestion(currentIndex) {
+            if (currentIndex < quizData.questions.length - 1) {
+                document.getElementById(`question-${currentIndex}`).classList.remove('active');
+                document.getElementById(`question-${currentIndex + 1}`).classList.add('active');
+                currentQuestion = currentIndex + 1;
+                updateProgressBar();
+            } else {
+                showResults();
+            }
+        }
+        
+        function goToPrevQuestion(currentIndex) {
+            if (currentIndex > 0) {
+                document.getElementById(`question-${currentIndex}`).classList.remove('active');
+                document.getElementById(`question-${currentIndex - 1}`).classList.add('active');
+                currentQuestion = currentIndex - 1;
+                updateProgressBar();
+            }
+        }
+        
+        function updateProgressBar() {
+            const progressPercentage = ((currentQuestion + 1) / quizData.questions.length) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+        }
+        
+        function showResults() {
+            document.getElementById(`question-${quizData.questions.length - 1}`).classList.remove('active');
+            resultsCard.classList.add('active');
+            
+            // Update final score
+            finalScore.textContent = `Score: ${score}/${quizData.questions.length}`;
+        }
+        
+        // Initialize the quiz when page loads
+        document.addEventListener('DOMContentLoaded', initQuiz);
+    </script>
+</body>
+</html>

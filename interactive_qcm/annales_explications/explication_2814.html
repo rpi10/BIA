@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explication BIA</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --danger: #f94144;
+            --info: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #adb5bd;
+            --correct: #2dc653;
+            --incorrect: #e63946;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            background-color: #f0f2f5;
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .question-card {
+            margin-bottom: 2rem;
+        }
+        
+        .question-title {
+            color: var(--primary);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--light);
+            padding-bottom: 0.5rem;
+        }
+        
+        .question-text {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .question-text img {
+            max-width: 100%;
+            height: auto;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        
+        .options-container {
+            display: grid;
+            gap: 0.7rem;
+            margin-bottom: 2rem;
+        }
+        
+        .option {
+            padding: 0.7rem;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .option.correct {
+            border-color: var(--correct);
+            background-color: rgba(45, 198, 83, 0.1);
+        }
+        
+        .explanation-section {
+            margin-top: 2rem;
+        }
+        
+        .explanation-title {
+            color: var(--info);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--light);
+            padding-bottom: 0.5rem;
+        }
+        
+        .explanation-content {
+            background-color: rgba(72, 149, 239, 0.05);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--info);
+        }
+        
+        .explanation-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .explanation-content strong {
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="question-card">
+            <h2 class="question-title">Question</h2>
+            <div class="question-text">
+                Pendant un vol en montée rectiligne à vitesse constante :
+                
+            </div>
+            <div class="options-container">
+                <div class="option">A- la portance équilibre le poids</div><div class="option">B- la portance est supérieure au poids</div><div class="option correct">C- la portance est inférieure au poids</div><div class="option">D- le facteur de charge est supérieur à 1</div>
+            </div>
+        </div>
+        
+        <div class="explanation-section">
+            <h2 class="explanation-title">Explication</h2>
+            <div class="explanation-content">
+                <strong>DEMONSTRATION : durant un vol en montée rectiligne uniforme, la portance est inférieure au poids.</strong><br/>
+<br/>
+<span class="u">Système</span> : aéronef de masse m.<br/>
+<span class="u">Référentiel</span> : terrestre, supposé galiléen.<br/>
+<span class="u">Bilan des forces</span> :<br/>
+
+- soit P1, le poids de l'aéronef<br/>
+
+- soit P2, la portance de l'aéronef<br/>
+
+- soit T1, la traction exercée par le moteur<br/>
+
+- soit T2 la traînée de l'aéronef<br/>
+<br/>
+
+Positionnons nous dans le repère de l'avion : <a href="https://urlz.fr/lVAG" rel="nofollow" target="_blank">https://urlz.fr/lVAG</a> (schéma).<br/>
+
+Alors,<br/>
+
+- P1 = Pa + Cp où Pa suit l'axe de lacet et Cp l'axe de roulis.<br/>
+
+- P2 suit l'axe de lacet<br/>
+
+- T1 suit l'axe de roulis<br/>
+
+- T2 suit l'axe de roulis<br/>
+<br/>
+
+En effet, le poids et la seule force à se décomposer (car c'est une force conservative). Pour s'en persuader, voici un petit schéma : <a href="https://i.servimg.com/u/f43/11/53/35/84/quatre10.jpg" rel="nofollow" target="_blank">https://i.servimg.com/u/f43/11/53/35/84/quatre10.jpg</a><br/>
+<br/>
+
+Ainsi, il ne reste plus qu'à appliquer la Seconde loi de Newton sur le système dans notre référentiel galiléen.<br/>
+
+En notation vectorielle : P1 + P2 + T1 + T2 = m a<br/>
+
+L'accélération, notée a, est nulle par hypothèse d'un déplacement rectiligne uniforme.<br/>
+
+Donc, P1 + P2 + T1 + T2 = 0 (vecteurs)<br/>
+
+Donc, Pa + Cp + P2 + T1 + T2 = 0 (vecteurs)<br/>
+<br/>
+
+Projetons suivant les axes de roulis et lacet (plus de vecteurs ici) :<br/>
+
+Suivant l'axe de roulis : T1 - T2 - Cp = 0<br/>
+
+Suivant l'axe de lacet : P2 - Pa = 0<br/>
+<br/>
+
+Ainsi, P2 = Pa<br/>
+
+Or, en montée, Cp &gt; 0<br/>
+
+Donc, P1 = Pa + Cp &gt; Pa = P2<br/>
+
+D'où P2 &lt; P1<br/>
+<br/>
+
+La portance est inférieure au poids de l'aéronef.<br/>
+
+☐<br/>
+<br/>
+<strong>A RETENIR</strong><br/>
+
+Ce qu'il faut bien retenir, c'est qu'en montée, le poids et le poids apparent diffèrent. Par un petit schéma, on peut remarquer intuitivement que P1 &gt; Pa = P2 (théorème de Pythagore).
+            </div>
+        </div>
+    </div>
+</body>
+</html>

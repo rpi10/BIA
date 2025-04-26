@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive QCM Navigator</title>
+    <style>
+        :root {
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --secondary: #2ecc71;
+            --dark: #34495e;
+            --light: #ecf0f1;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --gray: #95a5a6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem;
+            flex-grow: 1;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--primary);
+        }
+        
+        h1 {
+            color: var(--dark);
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .navigation-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .subject-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        
+        .subject-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .subject-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .subject-card.active {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
+        }
+        
+        .subject-card-header {
+            padding: 1rem;
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+        
+        .subject-card-body {
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .subject-code {
+            display: inline-block;
+            background-color: var(--light);
+            color: var(--dark);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+        
+        .random-btn-container {
+            text-align: center;
+            margin: 1.5rem 0;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-random {
+            background-color: var(--warning);
+        }
+        
+        .btn-random:hover {
+            background-color: #e67e22;
+        }
+        
+        .year-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .year-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .year-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .year-link {
+            display: block;
+            padding: 1.2rem 0.5rem;
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 600;
+            font-size: 1.2rem;
+            transition: all 0.2s ease;
+        }
+        
+        .year-link:hover {
+            background-color: var(--light);
+        }
+        
+        .back-btn {
+            margin-bottom: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: var(--gray);
+        }
+        
+        .back-btn:hover {
+            background-color: #7f8c8d;
+        }
+        
+        .section-title {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            color: var(--dark);
+            border-left: 4px solid var(--primary);
+            padding-left: 1rem;
+        }
+        
+        footer {
+            margin-top: 3rem;
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+            padding: 1.5rem;
+            background-color: white;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            .subject-selection {
+                grid-template-columns: 1fr;
+            }
+            
+            .year-selection {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Interactive QCM Navigator</h1>
+            <p class="subtitle">Ancien programme du 25/03/1993</p>
+        </header>
+        
+        <div class="navigation-container">
+            <!-- Subject Selection View -->
+            <div id="subject-view">
+                <h2 class="section-title">Select a Subject</h2>
+                <div class="subject-selection">
+                    <div class="subject-card" data-code="mto">
+                        <div class="subject-card-header">Météorologie et aérologie</div>
+                        <div class="subject-card-body">
+                            <p>Questions related to meteorology and aerology</p>
+                            <span class="subject-code">MTO</span>
+                        </div>
+                    </div>
+                    
+                    <div class="subject-card" data-code="amv">
+                        <div class="subject-card-header">Aérodynamique, aérostatique et principes du vol</div>
+                        <div class="subject-card-body">
+                            <p>Questions about aerodynamics, aerostatics and flight principles</p>
+                            <span class="subject-code">AMV</span>
+                        </div>
+                    </div>
+                    
+                    <div class="subject-card" data-code="cda">
+                        <div class="subject-card-header">Etude des aéronefs et des engins spatiaux</div>
+                        <div class="subject-card-body">
+                            <p>Study of aircraft and spacecraft</p>
+                            <span class="subject-code">CDA</span>
+                        </div>
+                    </div>
+                    
+                    <div class="subject-card" data-code="nrs">
+                        <div class="subject-card-header">Navigation, réglementation, sécurité des vols</div>
+                        <div class="subject-card-body">
+                            <p>Navigation, regulations, and flight safety</p>
+                            <span class="subject-code">NRS</span>
+                        </div>
+                    </div>
+                    
+                    <div class="subject-card" data-code="his">
+                        <div class="subject-card-header">Histoire et culture de l'aéronautique et du spatial</div>
+                        <div class="subject-card-body">
+                            <p>History and culture of aeronautics and space</p>
+                            <span class="subject-code">HIS</span>
+                        </div>
+                    </div>
+                    
+                    <div class="subject-card" data-code="ang">
+                        <div class="subject-card-header">Anglais (facultatif)</div>
+                        <div class="subject-card-body">
+                            <p>English language (optional)</p>
+                            <span class="subject-code">ANG</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="random-btn-container">
+                    <button id="random-qcm" class="btn btn-random">Open Random QCM</button>
+                </div>
+            </div>
+            
+            <!-- Year Selection View (initially hidden) -->
+            <div id="year-view" class="hidden">
+                <button id="back-to-subjects" class="btn back-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    Back to Subjects
+                </button>
+                
+                <h2 id="year-selection-title" class="section-title">Select a Year for <span id="selected-subject-name">Subject</span></h2>
+                
+                <div class="year-selection">
+                    <div class="year-card">
+                        <a href="#" class="year-link" data-year="2015">2015</a>
+                    </div>
+                    <div class="year-card">
+                        <a href="#" class="year-link" data-year="2016">2016</a>
+                    </div>
+                    <div class="year-card">
+                        <a href="#" class="year-link" data-year="2017">2017</a>
+                    </div>
+                    <div class="year-card">
+                        <a href="#" class="year-link" data-year="2018">2018</a>
+                    </div>
+                    <div class="year-card">
+                        <a href="#" class="year-link" data-year="2019">2019</a>
+                    </div>
+                    <div class="year-card">
+                        <a href="#" class="year-link" data-year="2020">2020</a>
+                    </div>
+                    <div class="year-card">
+                        <a href="#" class="year-link" data-year="2021">2021</a>
+                    </div>
+                    <div class="year-card">
+                        <a href="#" class="year-link" data-year="2022">2022</a>
+                    </div>
+                    <div class="year-card">
+                        <a href="#" class="year-link" data-year="2023">2023</a>
+                    </div>
+                    <div class="year-card">
+                        <a href="#" class="year-link" data-year="2024">2024</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2025 Interactive QCM Navigator | Last updated: April 26, 2025</p>
+    </footer>
+    
+    <script>
+        // Full subject names mapping
+        const subjectNames = {
+            'mto': 'Météorologie et aérologie',
+            'amv': 'Aérodynamique, aérostatique et principes du vol',
+            'cda': 'Etude des aéronefs et des engins spatiaux',
+            'nrs': 'Navigation, réglementation, sécurité des vols',
+            'his': 'Histoire et culture de l\'aéronautique et du spatial',
+            'ang': 'Anglais (facultatif)'
+        };
+        
+        // The list of filenames from your directory
+        const filenames = [
+            "2024_ang.html", "2024_cda.html", "2024_his.html", "2024_mto.html", "2024_nrs.html",
+            "2015_amv.html", "2015_ang.html", "2015_cda.html", "2015_his.html", "2015_mto.html", "2015_nrs.html",
+            "2016_amv.html", "2016_ang.html", "2016_cda.html", "2016_his.html", "2016_mto.html", "2016_nrs.html",
+            "2017_amv.html", "2017_ang.html", "2017_cda.html", "2017_his.html", "2017_mto.html", "2017_nrs.html",
+            "2018_amv.html", "2018_ang.html", "2018_cda.html", "2018_his.html", "2018_mto.html", "2018_nrs.html",
+            "2019_amv.html", "2019_ang.html", "2019_cda.html", "2019_his.html", "2019_mto.html", "2019_nrs.html",
+            "2020_amv.html", "2020_ang.html", "2020_cda.html", "2020_his.html", "2020_mto.html", "2020_nrs.html",
+            "2021_amv.html", "2021_ang.html", "2021_cda.html", "2021_his.html", "2021_mto.html", "2021_nrs.html",
+            "2022_amv.html", "2022_ang.html", "2022_cda.html", "2022_his.html", "2022_mto.html", "2022_nrs.html",
+            "2023_amv.html", "2023_ang.html", "2023_cda.html", "2023_his.html", "2023_mto.html", "2023_nrs.html",
+            "2024_amv.html"
+        ];
+        
+        let selectedSubject = '';
+        
+        // DOM elements
+        const subjectView = document.getElementById('subject-view');
+        const yearView = document.getElementById('year-view');
+        const subjectCards = document.querySelectorAll('.subject-card');
+        const yearLinks = document.querySelectorAll('.year-link');
+        const backButton = document.getElementById('back-to-subjects');
+        const randomButton = document.getElementById('random-qcm');
+        const selectedSubjectName = document.getElementById('selected-subject-name');
+        
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add event listeners to subject cards
+            subjectCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    selectedSubject = card.getAttribute('data-code');
+                    showYearView(selectedSubject);
+                });
+            });
+            
+            // Add event listeners to year links
+            yearLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const year = link.getAttribute('data-year');
+                    openQCM(year, selectedSubject);
+                });
+            });
+            
+            // Back button functionality
+            backButton.addEventListener('click', () => {
+                showSubjectView();
+            });
+            
+            // Random QCM button
+            randomButton.addEventListener('click', () => {
+                const randomFile = getRandomFile();
+                if (randomFile) {
+                    window.open(randomFile, '_blank');
+                }
+            });
+        });
+        
+        // Show year selection view
+        function showYearView(subjectCode) {
+            subjectView.classList.add('hidden');
+            yearView.classList.remove('hidden');
+            selectedSubjectName.textContent = subjectNames[subjectCode];
+            
+            // Highlight years that have available files
+            yearLinks.forEach(link => {
+                const year = link.getAttribute('data-year');
+                const filename = `${year}_${subjectCode}.html`;
+                
+                if (filenames.includes(filename)) {
+                    link.parentElement.style.opacity = '1';
+                    link.style.pointerEvents = 'auto';
+                } else {
+                    link.parentElement.style.opacity = '0.5';
+                    link.style.pointerEvents = 'none';
+                }
+            });
+        }
+        
+        // Show subject selection view
+        function showSubjectView() {
+            yearView.classList.add('hidden');
+            subjectView.classList.remove('hidden');
+            selectedSubject = '';
+        }
+        
+        // Open the QCM file
+        function openQCM(year, subject) {
+            const filename = `${year}_${subject}.html`;
+            if (filenames.includes(filename)) {
+                window.open(filename, '_blank');
+            }
+        }
+        
+        // Get a random QCM file
+        function getRandomFile() {
+            if (filenames.length > 0) {
+                const randomIndex = Math.floor(Math.random() * filenames.length);
+                return filenames[randomIndex];
+            }
+            return null;
+        }
+        
+        // Add touch support for better mobile experience
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.subject-card, .year-card');
+            
+            cards.forEach(card => {
+                card.addEventListener('touchstart', () => {
+                    card.style.transform = 'scale(0.98)';
+                });
+                
+                card.addEventListener('touchend', () => {
+                    card.style.transform = '';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

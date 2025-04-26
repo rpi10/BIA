@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aérodynamique, aérostatique et principes du vol - (B.I.A. 2018)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --danger: #f94144;
+            --info: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #adb5bd;
+            --correct: #2dc653;
+            --incorrect: #e63946;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f2f5;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .quiz-title {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .quiz-subtitle {
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .question-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            display: none;
+        }
+        
+        .question-card.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .question-number {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .question-text img {
+            max-width: 100%;
+            height: auto;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        
+        .options-container {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .option-btn {
+            background-color: var(--light);
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            display: flex;
+            align-items: center;
+        }
+        
+        .option-btn:hover {
+            background-color: #e9ecef;
+            transform: translateY(-2px);
+        }
+        
+        .option-btn.selected {
+            border-color: var(--primary);
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+        
+        .option-btn.correct {
+            border-color: var(--correct);
+            background-color: rgba(45, 198, 83, 0.1);
+        }
+        
+        .option-btn.incorrect {
+            border-color: var(--incorrect);
+            background-color: rgba(230, 57, 70, 0.1);
+        }
+        
+        .option-btn.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        .option-prefix {
+            font-weight: 600;
+            color: var(--primary);
+            margin-right: 10px;
+            min-width: 25px;
+        }
+        
+        .option-btn.correct .option-prefix {
+            color: var(--correct);
+        }
+        
+        .option-btn.incorrect .option-prefix {
+            color: var(--incorrect);
+        }
+        
+        .feedback-icon {
+            margin-left: auto;
+            font-size: 1.2rem;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+        
+        .btn-next {
+            display: none;
+        }
+        
+        .results-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            display: none;
+        }
+        
+        .results-card.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        .results-card h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .results-card p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .celebration {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .explanation-note {
+            font-size: 0.9rem;
+            color: var(--info);
+            margin-top: 1rem;
+            display: block;
+        }
+        
+        .explanation-link {
+            color: var(--info);
+            text-decoration: none;
+        }
+        
+        .explanation-link:hover {
+            text-decoration: underline;
+        }
+        
+        .score-display {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 1rem 0;
+        }
+        
+        .answer-feedback {
+            font-size: 1rem;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .answer-feedback.correct {
+            background-color: rgba(45, 198, 83, 0.1);
+            color: var(--correct);
+            display: block;
+        }
+        
+        .answer-feedback.incorrect {
+            background-color: rgba(230, 57, 70, 0.1);
+            color: var(--incorrect);
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .quiz-title {
+                font-size: 1.75rem;
+            }
+            
+            .question-text {
+                font-size: 1.1rem;
+            }
+            
+            .option-btn {
+                padding: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="quiz-header">
+            <h1 class="quiz-title">Aérodynamique, aérostatique et principes du vol</h1>
+            <h2 class="quiz-subtitle">(B.I.A. 2018)</h2>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+        </div>
+        
+        <div id="questions-container">
+            <!-- Questions will be inserted here by JavaScript -->
+        </div>
+        
+        <div class="results-card" id="results-card">
+            <div class="celebration">🎉</div>
+            <h2>Mission Accomplie!</h2>
+            <p>Vous avez terminé le QCM.</p>
+            <div id="final-score" class="score-display">Score: 0/0</div>
+            <a href="annales_corrections/2018_amv_corrections.html" class="btn btn-primary">Voir la correction complète</a>
+        </div>
+    </div>
+    
+    <script>
+        // Quiz data
+        const quizData = {"title": "A\u00e9rodynamique, a\u00e9rostatique et principes du vol", "subtitle": "(B.I.A. 2018)", "questions": [{"text": "<div class=\"q\"><p>1 - La vitesse de l'\u00e9coulement autour d'une aile\u00a0: <em><a href=\"annales_explications/explication_2801.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- augmente sur l'extrados et diminue sur l'intrados", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- diminue sur l'extrados et diminue sur l'intrados", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- diminue sur l'extrados et augmente sur l'intrados", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- augmente sur l'extrados et augmente sur l'intrados", "value": "d", "letter": "D", "is_correct": false}], "id": 1, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>2 - Au sein d'un \u00e9coulement fluide autour d'une aile, lorsque la vitesse de cet \u00e9coulement augmente, la pression statique\u00a0: <em><a href=\"annales_explications/explication_2802.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- augmente", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- diminue", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- est constante quelle que soit la variation de vitesse", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- n'augmente que si la temp\u00e9rature augmente", "value": "d", "letter": "D", "is_correct": false}], "id": 2, "correct_answer": "B"}, {"text": "<div class=\"q\"><p>3 - L'origine de la sustentation r\u00e9sulte de l'apparition\u00a0: <em><a href=\"annales_explications/explication_2803.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- d'une surpression \u00e0 l'extrados et d'une d\u00e9pression \u00e0 l'intrados", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- d'une surpression \u00e0 l'intrados et d'une d\u00e9pression \u00e0 l'extrados", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- d'une d\u00e9pression \u00e0 l'extrados et \u00e0 l'intrados", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- d'une surpression \u00e0 l'extrados et \u00e0 l'intrados", "value": "d", "letter": "D", "is_correct": false}], "id": 3, "correct_answer": "B"}, {"text": "<div class=\"q\"><p>4 - La portance est\u00a0: <em><a href=\"annales_explications/explication_2804.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- la force g\u00e9n\u00e9r\u00e9e par le moteur", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- toujours \u00e9gale et de direction oppos\u00e9e au poids de l'avion", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- la composante de la force a\u00e9rodynamique qui est perpendiculaire \u00e0 la direction vent relatif", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- la composante de la force a\u00e9rodynamique qui est parall\u00e8le \u00e0 la direction du vent relatif", "value": "d", "letter": "D", "is_correct": false}], "id": 4, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>5 - L'angle d'incidence d'un profil est l'angle form\u00e9 entre\u00a0: <em><a href=\"annales_explications/explication_2805.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- la corde du profil et l'horizontale", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- l'axe longitudinal de l'avion et la direction du vent relatif", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- la direction du vent relatif et l'horizontale", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- la corde du profil et la direction du vent relatif", "value": "d", "letter": "D", "is_correct": true}], "id": 5, "correct_answer": "D"}, {"text": "<div class=\"q\"><p>6 - A vitesse constante, si on augmente l'incidence du profil\u00a0: <em><a href=\"annales_explications/explication_2806.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- la portance et la tra\u00een\u00e9e augmentent", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- la tra\u00een\u00e9e diminue et la portance augmente", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- la portance diminue", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- la portance augmente et la tra\u00een\u00e9e diminue", "value": "d", "letter": "D", "is_correct": false}], "id": 6, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>7 - Un planeur vole en air calme \u00e0 144 km.h<sup>-1</sup>, son variom\u00e8tre indique 0,8 m.s<sup>-1</sup>, sa finesse est de\u00a0: <em><a href=\"annales_explications/explication_2807.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- 50", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- 180", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- 10", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- 0,02", "value": "d", "letter": "D", "is_correct": false}], "id": 7, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>8 - La vitesse de d\u00e9crochage d'un avion augmente quand\u00a0: <em><a href=\"annales_explications/explication_2808.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- la quantit\u00e9 de carburant dans les r\u00e9servoirs diminue", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- le facteur de charge diminue", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- la masse de l'avion diminue", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- le facteur de charge augmente", "value": "d", "letter": "D", "is_correct": true}], "id": 8, "correct_answer": "D"}, {"text": "<div class=\"q\"><p>9 - Lors d'une ressource, le facteur de charge\u00a0: <em><a href=\"annales_explications/explication_2809.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- augmente", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- diminue et la vitesse de d\u00e9crochage augmente", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- reste constant", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- diminue ainsi que la vitesse de d\u00e9crochage", "value": "d", "letter": "D", "is_correct": false}], "id": 9, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>10 - L'allongement d'une aile est\u00a0: <em><a href=\"annales_explications/explication_2810.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- le rapport envergure sur corde moyenne", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- le rapport corde moyenne sur envergure", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- fonction de l'\u00e9paisseur du profil", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- faible sur les planeurs", "value": "d", "letter": "D", "is_correct": false}], "id": 10, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>11 - La sortie des volets de bord de fuite provoque\u00a0: <em><a href=\"annales_explications/explication_2811.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- l'augmentation du coefficient de portance et du coefficient de tra\u00een\u00e9e", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- l'augmentation du coefficient de portance et la diminution du coefficient de tra\u00een\u00e9e", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- la diminution du coefficient de portance et la diminution du coefficient de tra\u00een\u00e9e", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- la diminution du coefficient de portance et l'augmentation du coefficient de tra\u00een\u00e9e", "value": "d", "letter": "D", "is_correct": false}], "id": 11, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>12 - La position du centre de gravit\u00e9 d'un avion a un effet important sur la stabilit\u00e9 et la maniabilit\u00e9 de l'avion, un centrage arri\u00e8re rend l'avion\u00a0: <em><a href=\"annales_explications/explication_2812.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- peu maniable mais stable autour de l'axe de tangage", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- instable autour de l'axe de lacet", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- instable autour de l'axe de roulis", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- maniable mais moins stable autour de l'axe de tangage", "value": "d", "letter": "D", "is_correct": true}], "id": 12, "correct_answer": "D"}, {"text": "<div class=\"q\"><p>13 - Le volume de l'enveloppe d'une montgolfi\u00e8re est de 10\u00a0000 m<sup>3</sup>, la masse volumique de l'air ext\u00e9rieur est de 1,225 kg.m<sup>-3</sup> et la masse volumique de l'air chaud de 1,100 kg.m<sup>-3</sup>. La masse totale maximale de la montgolfi\u00e8re est de\u00a0: <em><a href=\"annales_explications/explication_2813.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- 1\u00a0250 kg", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- 12\u00a0250 kg", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- 11\u00a0000 kg", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- 1\u00a0100 kg", "value": "d", "letter": "D", "is_correct": false}], "id": 13, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>14 - Pendant un vol en mont\u00e9e rectiligne \u00e0 vitesse constante\u00a0: <em><a href=\"annales_explications/explication_2814.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- la portance \u00e9quilibre le poids", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- la portance est sup\u00e9rieure au poids", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- la portance est inf\u00e9rieure au poids", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- le facteur de charge est sup\u00e9rieur \u00e0 1", "value": "d", "letter": "D", "is_correct": false}], "id": 14, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>15 - Un ULM pendulaire est pilot\u00e9\u00a0: <em><a href=\"annales_explications/explication_2815.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- en roulis et en tangage, par traction sur les suspentes", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- en roulis seulement, par d\u00e9placement du centre de gravit\u00e9", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- en tangage seulement, par d\u00e9placement du centre de gravit\u00e9", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- en roulis et en tangage, par d\u00e9placement du centre de gravit\u00e9", "value": "d", "letter": "D", "is_correct": true}], "id": 15, "correct_answer": "D"}, {"text": "<div class=\"q\"><p>16 - En virage en palier le facteur de charge augmente avec\u00a0: <em><a href=\"annales_explications/explication_2816.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- l'altitude", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- l'inclinaison", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- la masse de l'avion", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- la vitesse", "value": "d", "letter": "D", "is_correct": false}], "id": 16, "correct_answer": "B"}, {"text": "<div class=\"q\"><p>17 - En mont\u00e9e, un avion subit un vent arri\u00e8re qui aura pour cons\u00e9quence\u00a0: <em><a href=\"annales_explications/explication_2817.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- une augmentation du taux de mont\u00e9e", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- une diminution de la pente sol", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- une augmentation de la pente sol", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- une r\u00e9duction du temps de mont\u00e9e", "value": "d", "letter": "D", "is_correct": false}], "id": 17, "correct_answer": "B"}, {"text": "<div class=\"q\"><p>18 - Le but principal des spoilers est de diminuer\u00a0: <em><a href=\"annales_explications/explication_2818.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- la tra\u00een\u00e9e", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- la vitesse d'atterrissage", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- la portance de l'aile", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- la portance et la tra\u00een\u00e9e", "value": "d", "letter": "D", "is_correct": false}], "id": 18, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>19 - Sur un h\u00e9licopt\u00e8re, le vrillage d'une pale a pour but de tendre \u00e0\u00a0: <em><a href=\"annales_explications/explication_2819.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- augmenter la portance de la pale", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- uniformiser la portance sur toute la longueur de la pale", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- diminuer la tra\u00een\u00e9e", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- d\u00e9placer le centre de gravit\u00e9 de la pale", "value": "d", "letter": "D", "is_correct": false}], "id": 19, "correct_answer": "B"}, {"text": "<div class=\"q\"><p>20 - La base de lancement spatial de Kourou est situ\u00e9e proche de l'\u00e9quateur pour profiter\u00a0: <em><a href=\"annales_explications/explication_2820.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- d'une plus grande vitesse de rotation de la Terre", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- d'un climat temp\u00e9r\u00e9", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- d'une pression atmosph\u00e9rique faible", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- d'un espace a\u00e9rien r\u00e9serv\u00e9 \u00e0 cet usage", "value": "d", "letter": "D", "is_correct": false}], "id": 20, "correct_answer": "A"}], "correctionUrl": "annales_corrections/2018_amv_corrections.html"};
+        
+        // DOM elements
+        const questionsContainer = document.getElementById('questions-container');
+        const progressBar = document.getElementById('progress-bar');
+        const resultsCard = document.getElementById('results-card');
+        const finalScore = document.getElementById('final-score');
+        
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = new Array(quizData.questions.length).fill(false);
+        
+        // Initialize the quiz
+        function initQuiz() {
+            // Create all question cards
+            quizData.questions.forEach((question, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+                questionCard.id = `question-${index}`;
+                
+                if (index === 0) {
+                    questionCard.classList.add('active');
+                }
+                
+                questionCard.innerHTML = `
+                    <div class="question-number">Question ${index + 1} / ${quizData.questions.length}</div>
+                    <div class="question-text">${question.text}</div>
+                    <div class="options-container">
+                        ${question.options.map((option, i) => `
+                            <button class="option-btn" data-value="${option.value}" data-letter="${option.letter}" data-correct="${option.is_correct}">
+                                <span class="option-prefix">${option.letter}.</span>
+                                <span class="option-text">${option.text}</span>
+                                <span class="feedback-icon"></span>
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div id="feedback-${index}" class="answer-feedback"></div>
+                    <div class="controls">
+                        ${index > 0 ? `<button class="btn btn-outline btn-prev" data-index="${index}">Précédent</button>` : `<div></div>`}
+                        <button class="btn btn-primary btn-next" data-index="${index}">Suivant</button>
+                    </div>
+                    ${question.text.includes('explications.php') || question.text.includes('annales_explications') ? 
+                        `<span class="explanation-note">Cliquez sur "<a href="#" class="explanation-link" target="_blank">Explication</a>" pour comprendre cette question.</span>` : 
+                        ``}
+                `;
+                
+                questionsContainer.appendChild(questionCard);
+                
+                // Add event listeners to options
+                const options = questionCard.querySelectorAll('.option-btn');
+                options.forEach(option => {
+                    option.addEventListener('click', function() {
+                        if (!answered[index]) {
+                            selectOption(this, index);
+                        }
+                    });
+                });
+                
+                // Add event listener for next button
+                const nextBtn = questionCard.querySelector('.btn-next');
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', function() {
+                        goToNextQuestion(index);
+                    });
+                }
+                
+                // Add event listener for prev button
+                const prevBtn = questionCard.querySelector('.btn-prev');
+                if (prevBtn) {
+                    prevBtn.addEventListener('click', function() {
+                        goToPrevQuestion(index);
+                    });
+                }
+            });
+            
+            updateProgressBar();
+        }
+        
+        function selectOption(optionElement, questionIndex) {
+            // If this question has already been answered, do nothing
+            if (answered[questionIndex]) {
+                return;
+            }
+            
+            // Mark this question as answered
+            answered[questionIndex] = true;
+            
+            // Remove selected class from all options in this question
+            const allOptions = optionElement.parentElement.querySelectorAll('.option-btn');
+            allOptions.forEach(opt => {
+                opt.classList.remove('selected', 'correct', 'incorrect');
+                opt.classList.add('disabled');
+            });
+            
+            // Add selected class to clicked option
+            optionElement.classList.add('selected');
+            
+            // Check if the answer is correct
+            const isCorrect = optionElement.dataset.correct === "true";
+            const correctOption = Array.from(allOptions).find(opt => opt.dataset.correct === "true");
+            const feedbackElement = document.getElementById(`feedback-${questionIndex}`);
+            
+            // Update score
+            if (isCorrect) {
+                score++;
+                optionElement.classList.add('correct');
+                optionElement.querySelector('.feedback-icon').innerHTML = "✓";
+                feedbackElement.textContent = "Correct!";
+                feedbackElement.classList.add('correct');
+                feedbackElement.classList.remove('incorrect');
+            } else {
+                optionElement.classList.add('incorrect');
+                optionElement.querySelector('.feedback-icon').innerHTML = "✗";
+                feedbackElement.textContent = `Incorrect. La bonne réponse est ${correctOption.dataset.letter}.`;
+                feedbackElement.classList.add('incorrect');
+                feedbackElement.classList.remove('correct');
+                
+                // Highlight the correct answer
+                correctOption.classList.add('correct');
+                correctOption.querySelector('.feedback-icon').innerHTML = "✓";
+            }
+            
+            // Show next button
+            const nextBtn = optionElement.parentElement.parentElement.querySelector('.btn-next');
+            nextBtn.style.display = 'block';
+        }
+        
+        function goToNextQuestion(currentIndex) {
+            if (currentIndex < quizData.questions.length - 1) {
+                document.getElementById(`question-${currentIndex}`).classList.remove('active');
+                document.getElementById(`question-${currentIndex + 1}`).classList.add('active');
+                currentQuestion = currentIndex + 1;
+                updateProgressBar();
+            } else {
+                showResults();
+            }
+        }
+        
+        function goToPrevQuestion(currentIndex) {
+            if (currentIndex > 0) {
+                document.getElementById(`question-${currentIndex}`).classList.remove('active');
+                document.getElementById(`question-${currentIndex - 1}`).classList.add('active');
+                currentQuestion = currentIndex - 1;
+                updateProgressBar();
+            }
+        }
+        
+        function updateProgressBar() {
+            const progressPercentage = ((currentQuestion + 1) / quizData.questions.length) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+        }
+        
+        function showResults() {
+            document.getElementById(`question-${quizData.questions.length - 1}`).classList.remove('active');
+            resultsCard.classList.add('active');
+            
+            // Update final score
+            finalScore.textContent = `Score: ${score}/${quizData.questions.length}`;
+        }
+        
+        // Initialize the quiz when page loads
+        document.addEventListener('DOMContentLoaded', initQuiz);
+    </script>
+</body>
+</html>

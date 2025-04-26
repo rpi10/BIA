@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explication BIA</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --danger: #f94144;
+            --info: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #adb5bd;
+            --correct: #2dc653;
+            --incorrect: #e63946;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            background-color: #f0f2f5;
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .question-card {
+            margin-bottom: 2rem;
+        }
+        
+        .question-title {
+            color: var(--primary);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--light);
+            padding-bottom: 0.5rem;
+        }
+        
+        .question-text {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .question-text img {
+            max-width: 100%;
+            height: auto;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        
+        .options-container {
+            display: grid;
+            gap: 0.7rem;
+            margin-bottom: 2rem;
+        }
+        
+        .option {
+            padding: 0.7rem;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .option.correct {
+            border-color: var(--correct);
+            background-color: rgba(45, 198, 83, 0.1);
+        }
+        
+        .explanation-section {
+            margin-top: 2rem;
+        }
+        
+        .explanation-title {
+            color: var(--info);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--light);
+            padding-bottom: 0.5rem;
+        }
+        
+        .explanation-content {
+            background-color: rgba(72, 149, 239, 0.05);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--info);
+        }
+        
+        .explanation-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .explanation-content strong {
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="question-card">
+            <h2 class="question-title">Question</h2>
+            <div class="question-text">
+                Les pilotes anglais ont remporté la Bataille d’Angleterre contre les pilotes allemands grâce :
+                
+            </div>
+            <div class="options-container">
+                <div class="option">A- au blindage des Spitfire</div><div class="option">B- à la synchronisation des mitrailleuses avec la rotation de l’hélice</div><div class="option correct">C- au radar</div><div class="option">D- au décryptage des messages envoyés par la machine Enigma</div>
+            </div>
+        </div>
+        
+        <div class="explanation-section">
+            <h2 class="explanation-title">Explication</h2>
+            <div class="explanation-content">
+                Les radars étaient constitués de tours installées le long des côtes sud et sud-est de l'Angleterre, avec certaines également situées à l'intérieur des terres. On distinguait trois types de stations :<br/>
+
+- 20 stations Chain Home (CH), capables de repérer des avions jusqu'à 160 km ;<br/>
+
+- 30 stations Chain Home Low (CHL) qui détectaient les appareils volant à moins de 300 mètres ;<br/>
+
+- 24 unités radar mobiles MB2.<br/>
+
+Grâce à ces radars, le quartier général de la RAF pouvait localiser et anticiper les attaques de la Luftwaffe. Ces tours radar, bien que difficiles à détruire et faciles à réparer, ne furent jamais la cible principale des attaques allemandes, malgré leur importance cruciale.<br/>
+<br/>
+
+Un deuxième élément technique a bénéficié aux Britanniques : la qualité des carburants pour avions, principalement fournis depuis l'outre-mer et les États-Unis (avec des indices de cétane optimaux). Ces carburants permettaient aux chasseurs britanniques d'avoir de meilleures performances en montée et une plus grande souplesse dans leurs manœuvres, en comparaison aux chasseurs d'escorte de la Luftwaffe.<br/>
+<br/>
+
+Source : <a href="https://worldhistory.org/trans/fr/1-22787/bataille-dangleterre" rel="nofollow" target="_blank">https://worldhistory.org/trans/fr/1-22787/bataille-dangleterre</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

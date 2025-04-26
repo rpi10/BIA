@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histoire et culture de l'aéronautique et du spatial - (B.I.A. 2020)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --danger: #f94144;
+            --info: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #adb5bd;
+            --correct: #2dc653;
+            --incorrect: #e63946;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f2f5;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .quiz-title {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .quiz-subtitle {
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .question-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            display: none;
+        }
+        
+        .question-card.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .question-number {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .question-text img {
+            max-width: 100%;
+            height: auto;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        
+        .options-container {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .option-btn {
+            background-color: var(--light);
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            display: flex;
+            align-items: center;
+        }
+        
+        .option-btn:hover {
+            background-color: #e9ecef;
+            transform: translateY(-2px);
+        }
+        
+        .option-btn.selected {
+            border-color: var(--primary);
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+        
+        .option-btn.correct {
+            border-color: var(--correct);
+            background-color: rgba(45, 198, 83, 0.1);
+        }
+        
+        .option-btn.incorrect {
+            border-color: var(--incorrect);
+            background-color: rgba(230, 57, 70, 0.1);
+        }
+        
+        .option-btn.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        .option-prefix {
+            font-weight: 600;
+            color: var(--primary);
+            margin-right: 10px;
+            min-width: 25px;
+        }
+        
+        .option-btn.correct .option-prefix {
+            color: var(--correct);
+        }
+        
+        .option-btn.incorrect .option-prefix {
+            color: var(--incorrect);
+        }
+        
+        .feedback-icon {
+            margin-left: auto;
+            font-size: 1.2rem;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+        
+        .btn-next {
+            display: none;
+        }
+        
+        .results-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            display: none;
+        }
+        
+        .results-card.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        .results-card h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .results-card p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .celebration {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .explanation-note {
+            font-size: 0.9rem;
+            color: var(--info);
+            margin-top: 1rem;
+            display: block;
+        }
+        
+        .explanation-link {
+            color: var(--info);
+            text-decoration: none;
+        }
+        
+        .explanation-link:hover {
+            text-decoration: underline;
+        }
+        
+        .score-display {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 1rem 0;
+        }
+        
+        .answer-feedback {
+            font-size: 1rem;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .answer-feedback.correct {
+            background-color: rgba(45, 198, 83, 0.1);
+            color: var(--correct);
+            display: block;
+        }
+        
+        .answer-feedback.incorrect {
+            background-color: rgba(230, 57, 70, 0.1);
+            color: var(--incorrect);
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .quiz-title {
+                font-size: 1.75rem;
+            }
+            
+            .question-text {
+                font-size: 1.1rem;
+            }
+            
+            .option-btn {
+                padding: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="quiz-header">
+            <h1 class="quiz-title">Histoire et culture de l'aéronautique et du spatial</h1>
+            <h2 class="quiz-subtitle">(B.I.A. 2020)</h2>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+        </div>
+        
+        <div id="questions-container">
+            <!-- Questions will be inserted here by JavaScript -->
+        </div>
+        
+        <div class="results-card" id="results-card">
+            <div class="celebration">🎉</div>
+            <h2>Mission Accomplie!</h2>
+            <p>Vous avez terminé le QCM.</p>
+            <div id="final-score" class="score-display">Score: 0/0</div>
+            <a href="annales_corrections/2020_his_corrections.html" class="btn btn-primary">Voir la correction complète</a>
+        </div>
+    </div>
+    
+    <script>
+        // Quiz data
+        const quizData = {"title": "Histoire et culture de l'a\u00e9ronautique et du spatial", "subtitle": "(B.I.A. 2020)", "questions": [{"text": "<div class=\"q\"><p>1 - On attribue aux chinois l'invention d'un engin volant \"plus lourd que l'air\" qui est\u00a0: <em><a href=\"annales_explications/explication_3221.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- la lanterne c\u00e9leste", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- le cerf-volant", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- le ballon dirigeable", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- le ballon \u00e0 gaz", "value": "d", "letter": "D", "is_correct": false}], "id": 1, "correct_answer": "B"}, {"text": "<div class=\"q\"><p>2 - L\u00e9onard de Vinci a envisag\u00e9 un mod\u00e8le de parachute\u00a0: <em><a href=\"annales_explications/explication_3222.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- compos\u00e9 d'une voilure tournante en plumes d'oiseau", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- en forme de \u00ab\u00a0tente\u00a0\u00bb \u00e0 faces rectangulaires ou triangulaires", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- comportant quatre vis d\u2019Archim\u00e8de", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- de forme h\u00e9misph\u00e9rique", "value": "d", "letter": "D", "is_correct": false}], "id": 2, "correct_answer": "B"}, {"text": "<div class=\"q\"><p>3 - La premi\u00e8re ascension en ballon gonfl\u00e9 \u00e0 l'air chaud en 1783 est effectu\u00e9e par\u00a0: <em><a href=\"annales_explications/explication_3223.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- Cl\u00e9ment Ader", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- Charles Lindbergh", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- Pil\u00e2tre de Rozier et le marquis d'Arlandes", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- Gaston Tissandier", "value": "d", "letter": "D", "is_correct": false}], "id": 3, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>4 - A la fin du XIX\u00e8me si\u00e8cle, le pionnier du vol plan\u00e9 qui est \u00e0 l'origine de nombreuses exp\u00e9riences en situation r\u00e9elle est\u00a0: <em><a href=\"annales_explications/explication_3224.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- Orville Wright", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- Wilbur Wright", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- Louis Bl\u00e9riot", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- Otto Lilienthal", "value": "d", "letter": "D", "is_correct": true}], "id": 4, "correct_answer": "D"}, {"text": "<div class=\"q\"><p>5 - En 1901 Santos-Dumont effectue une d\u00e9monstration de navigation a\u00e9rienne. Son exploit consiste \u00e0\u00a0: <em><a href=\"annales_explications/explication_3225.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- contourner la tour Eiffel en ballon dirigeable", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- faire le tour de Paris avec un ballon \u00e0 air chaud", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- parcourir une distance de 10 km contre le vent en ballon dirigeable", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- rejoindre son aire d'envol apr\u00e8s un vol de 24 heures en ballon \u00e0 gaz", "value": "d", "letter": "D", "is_correct": false}], "id": 5, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>6 - En 1910, Henri Fabre est le premier \u00e0 d\u00e9coller \u00e0 bord d'un\u00a0: <em><a href=\"annales_explications/explication_3226.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- bimoteur", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- hydravion", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- planeur", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- autogire", "value": "d", "letter": "D", "is_correct": false}], "id": 6, "correct_answer": "B"}, {"text": "<div class=\"q\"><p>7 - Il y a 100 ans, en 1920, toute jeune brevet\u00e9e, Ren\u00e9 Caudron l\u2019engage et en fait la premi\u00e8re femme pilote d\u2019essai. Elle passe \u00e0 la post\u00e9rit\u00e9 pour avoir vaincu la Cordilli\u00e8re des Andes un an plus tard. Elle s\u2019appelait\u00a0: <em><a href=\"annales_explications/explication_3227.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- H\u00e9l\u00e8ne Boucher", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- Maryse Hilsz", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- Adrienne Bolland", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- Jacqueline Auriol", "value": "d", "letter": "D", "is_correct": false}], "id": 7, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>8 - En 1907, Paul Cornu d\u00e9colle avec un engin de son invention, est-ce un\u00a0: <em><a href=\"annales_explications/explication_3228.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- autogire", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- dirigeable", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- h\u00e9licopt\u00e8re", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- hydropt\u00e8re", "value": "d", "letter": "D", "is_correct": false}], "id": 8, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>9 - Le meilleur avion de chasse de la Premi\u00e8re Guerre mondiale fut le\u00a0: <em><a href=\"annales_explications/explication_3229.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- Caudron G3", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- Spitfire", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- Spad 13", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- Bl\u00e9riot XI", "value": "d", "letter": "D", "is_correct": false}], "id": 9, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>10 - L\u2019autogire a \u00e9t\u00e9 invent\u00e9 par un jeune ing\u00e9nieur, c\u2019\u00e9tait\u00a0: <em><a href=\"annales_explications/explication_3230.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- Louis Br\u00e9guet", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- Juan de la Cierva", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- Ernst Heinkel", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- Serge Dassault", "value": "d", "letter": "D", "is_correct": false}], "id": 10, "correct_answer": "B"}, {"text": "<div class=\"q\"><p>11 - Un peu avant la Premi\u00e8re Guerre mondiale, l'ing\u00e9nieur Raoul Badin se rend c\u00e9l\u00e8bre par une innovation concernant\u00a0: <em><a href=\"annales_explications/explication_3231.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- un instrument de bord destin\u00e9 \u00e0 mesurer la vitesse de l\u2019a\u00e9ronef par rapport \u00e0 l\u2019air dans lequel il \u00e9volue", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- le tir \u00e0 travers l'h\u00e9lice sans heurter les pales", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- la disposition en \u00e9toile des cylindres d'un moteur", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- le si\u00e8ge \u00e9jectable", "value": "d", "letter": "D", "is_correct": false}], "id": 11, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>12 - Le pilote de chasse qui d\u00e9tient le plus grand nombre de victoires confirm\u00e9es en 1914-1918 s\u2019appelle\u00a0: <em><a href=\"annales_explications/explication_3232.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- Pierre Clostermann", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- Ren\u00e9 Fonck", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- Georges Guynemer", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- Manfred von Richtoffen", "value": "d", "letter": "D", "is_correct": true}], "id": 12, "correct_answer": "D"}, {"text": "<div class=\"q\"><p>13 - Le constructeur fran\u00e7ais impliqu\u00e9 dans la cr\u00e9ation de l'A\u00e9ropostale pour \u00e9tablir une ligne a\u00e9rienne entre la France et l'Am\u00e9rique du sud s'appelait\u00a0: <em><a href=\"annales_explications/explication_3233.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- Louis Bl\u00e9riot", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- Marcel Dassault", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- Pierre-Georges Lat\u00e9co\u00e8re", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- Claude Dornier", "value": "d", "letter": "D", "is_correct": false}], "id": 13, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>14 - Dans les ann\u00e9es 1930 en France, un plan d'eau a servi de base aux hydravions pour les travers\u00e9es de l'Atlantique, devenant ainsi un a\u00e9roport international, c'est\u00a0: <em><a href=\"annales_explications/explication_3234.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- le lac de Biscarosse", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- le lac du Bourget", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- l'\u00e9tang de Berre", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- '\u00e9tang de Thau", "value": "d", "letter": "D", "is_correct": false}], "id": 14, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>15 - L'A\u00e9ropostale fut \u00e0 l'origine de la cr\u00e9ation d'une grande compagnie a\u00e9rienne en 1933, elle s\u2019appelait\u00a0: <em><a href=\"annales_explications/explication_3235.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- Air Inter", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- Air France", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- Air Atlantique", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- Air Littoral", "value": "d", "letter": "D", "is_correct": false}], "id": 15, "correct_answer": "B"}, {"text": "<div class=\"q\"><p>16 - Amelia Earhart, pilote am\u00e9ricaine, reste c\u00e9l\u00e8bre pour avoir \u00e9t\u00e9 la premi\u00e8re femme seule aux commandes de son avion \u00e0\u00a0: <em><a href=\"annales_explications/explication_3236.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- franchir la Cordill\u00e8re des Andes", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- traverser la mer M\u00e9diterran\u00e9e", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- survoler le P\u00f4le Nord", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- traverser l'oc\u00e9an Atlantique", "value": "d", "letter": "D", "is_correct": true}], "id": 16, "correct_answer": "D"}, {"text": "<div class=\"q\"><p>17 - Entre les deux guerres mondiales, le r\u00e9gime nazi fait voler sur tous les continents un a\u00e9ronef \u00e0 des fins de propagande. Il s'agit d'un\u00a0: <em><a href=\"annales_explications/explication_3237.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- chasseur Messerschmitt bf-109", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- dirigeable type Zeppelin", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- ballon de 25000 m3 gonfl\u00e9 \u00e0 l'h\u00e9lium", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- avion sans pilote appel\u00e9 V1", "value": "d", "letter": "D", "is_correct": false}], "id": 17, "correct_answer": "B"}, {"text": "<div class=\"q\"><p>18 - Lors de la Seconde Guerre mondiale, un chasseur \u00e0 r\u00e9action est pour la premi\u00e8re fois engag\u00e9 en combat a\u00e9rien. Il s'agit du\u00a0: <em><a href=\"annales_explications/explication_3238.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- Junker Ju 88", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- Focke-Wulf FW-190", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- Messerschmitt Me-262", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- Dornier Do 335", "value": "d", "letter": "D", "is_correct": false}], "id": 18, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>19 - \u00c0 l'issue de la Seconde Guerre mondiale, les Am\u00e9ricains ont employ\u00e9 des ing\u00e9nieurs allemands ayant con\u00e7u le missile balistique V2 afin de mener \u00e0 bien leur programme spatial. C'est le cas de\u00a0: <em><a href=\"annales_explications/explication_3239.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- Wernher von Braun", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- Willy Messerschmitt", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- Helmut Gr\u00f6ttrup", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- Robert Lusser", "value": "d", "letter": "D", "is_correct": false}], "id": 19, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>20 - Le premier homme qui effectua une orbite compl\u00e8te dans l\u2019espace en 1961 fut\u00a0: <em><a href=\"annales_explications/explication_3240.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- l'am\u00e9ricain Neil Armstrong (programme Apollo)", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- l'am\u00e9ricain Alan Shepard (programme Mercury)", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- le Sovi\u00e9tique Youri Gagarine (programme Vostok)", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- l'am\u00e9ricain John Glenn (programme Mercury)", "value": "d", "letter": "D", "is_correct": false}], "id": 20, "correct_answer": "C"}], "correctionUrl": "annales_corrections/2020_his_corrections.html"};
+        
+        // DOM elements
+        const questionsContainer = document.getElementById('questions-container');
+        const progressBar = document.getElementById('progress-bar');
+        const resultsCard = document.getElementById('results-card');
+        const finalScore = document.getElementById('final-score');
+        
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = new Array(quizData.questions.length).fill(false);
+        
+        // Initialize the quiz
+        function initQuiz() {
+            // Create all question cards
+            quizData.questions.forEach((question, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+                questionCard.id = `question-${index}`;
+                
+                if (index === 0) {
+                    questionCard.classList.add('active');
+                }
+                
+                questionCard.innerHTML = `
+                    <div class="question-number">Question ${index + 1} / ${quizData.questions.length}</div>
+                    <div class="question-text">${question.text}</div>
+                    <div class="options-container">
+                        ${question.options.map((option, i) => `
+                            <button class="option-btn" data-value="${option.value}" data-letter="${option.letter}" data-correct="${option.is_correct}">
+                                <span class="option-prefix">${option.letter}.</span>
+                                <span class="option-text">${option.text}</span>
+                                <span class="feedback-icon"></span>
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div id="feedback-${index}" class="answer-feedback"></div>
+                    <div class="controls">
+                        ${index > 0 ? `<button class="btn btn-outline btn-prev" data-index="${index}">Précédent</button>` : `<div></div>`}
+                        <button class="btn btn-primary btn-next" data-index="${index}">Suivant</button>
+                    </div>
+                    ${question.text.includes('explications.php') || question.text.includes('annales_explications') ? 
+                        `<span class="explanation-note">Cliquez sur "<a href="#" class="explanation-link" target="_blank">Explication</a>" pour comprendre cette question.</span>` : 
+                        ``}
+                `;
+                
+                questionsContainer.appendChild(questionCard);
+                
+                // Add event listeners to options
+                const options = questionCard.querySelectorAll('.option-btn');
+                options.forEach(option => {
+                    option.addEventListener('click', function() {
+                        if (!answered[index]) {
+                            selectOption(this, index);
+                        }
+                    });
+                });
+                
+                // Add event listener for next button
+                const nextBtn = questionCard.querySelector('.btn-next');
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', function() {
+                        goToNextQuestion(index);
+                    });
+                }
+                
+                // Add event listener for prev button
+                const prevBtn = questionCard.querySelector('.btn-prev');
+                if (prevBtn) {
+                    prevBtn.addEventListener('click', function() {
+                        goToPrevQuestion(index);
+                    });
+                }
+            });
+            
+            updateProgressBar();
+        }
+        
+        function selectOption(optionElement, questionIndex) {
+            // If this question has already been answered, do nothing
+            if (answered[questionIndex]) {
+                return;
+            }
+            
+            // Mark this question as answered
+            answered[questionIndex] = true;
+            
+            // Remove selected class from all options in this question
+            const allOptions = optionElement.parentElement.querySelectorAll('.option-btn');
+            allOptions.forEach(opt => {
+                opt.classList.remove('selected', 'correct', 'incorrect');
+                opt.classList.add('disabled');
+            });
+            
+            // Add selected class to clicked option
+            optionElement.classList.add('selected');
+            
+            // Check if the answer is correct
+            const isCorrect = optionElement.dataset.correct === "true";
+            const correctOption = Array.from(allOptions).find(opt => opt.dataset.correct === "true");
+            const feedbackElement = document.getElementById(`feedback-${questionIndex}`);
+            
+            // Update score
+            if (isCorrect) {
+                score++;
+                optionElement.classList.add('correct');
+                optionElement.querySelector('.feedback-icon').innerHTML = "✓";
+                feedbackElement.textContent = "Correct!";
+                feedbackElement.classList.add('correct');
+                feedbackElement.classList.remove('incorrect');
+            } else {
+                optionElement.classList.add('incorrect');
+                optionElement.querySelector('.feedback-icon').innerHTML = "✗";
+                feedbackElement.textContent = `Incorrect. La bonne réponse est ${correctOption.dataset.letter}.`;
+                feedbackElement.classList.add('incorrect');
+                feedbackElement.classList.remove('correct');
+                
+                // Highlight the correct answer
+                correctOption.classList.add('correct');
+                correctOption.querySelector('.feedback-icon').innerHTML = "✓";
+            }
+            
+            // Show next button
+            const nextBtn = optionElement.parentElement.parentElement.querySelector('.btn-next');
+            nextBtn.style.display = 'block';
+        }
+        
+        function goToNextQuestion(currentIndex) {
+            if (currentIndex < quizData.questions.length - 1) {
+                document.getElementById(`question-${currentIndex}`).classList.remove('active');
+                document.getElementById(`question-${currentIndex + 1}`).classList.add('active');
+                currentQuestion = currentIndex + 1;
+                updateProgressBar();
+            } else {
+                showResults();
+            }
+        }
+        
+        function goToPrevQuestion(currentIndex) {
+            if (currentIndex > 0) {
+                document.getElementById(`question-${currentIndex}`).classList.remove('active');
+                document.getElementById(`question-${currentIndex - 1}`).classList.add('active');
+                currentQuestion = currentIndex - 1;
+                updateProgressBar();
+            }
+        }
+        
+        function updateProgressBar() {
+            const progressPercentage = ((currentQuestion + 1) / quizData.questions.length) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+        }
+        
+        function showResults() {
+            document.getElementById(`question-${quizData.questions.length - 1}`).classList.remove('active');
+            resultsCard.classList.add('active');
+            
+            // Update final score
+            finalScore.textContent = `Score: ${score}/${quizData.questions.length}`;
+        }
+        
+        // Initialize the quiz when page loads
+        document.addEventListener('DOMContentLoaded', initQuiz);
+    </script>
+</body>
+</html>

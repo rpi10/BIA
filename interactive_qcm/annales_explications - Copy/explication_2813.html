@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explication BIA</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --danger: #f94144;
+            --info: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #adb5bd;
+            --correct: #2dc653;
+            --incorrect: #e63946;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            background-color: #f0f2f5;
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .question-card {
+            margin-bottom: 2rem;
+        }
+        
+        .question-title {
+            color: var(--primary);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--light);
+            padding-bottom: 0.5rem;
+        }
+        
+        .question-text {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .question-text img {
+            max-width: 100%;
+            height: auto;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        
+        .options-container {
+            display: grid;
+            gap: 0.7rem;
+            margin-bottom: 2rem;
+        }
+        
+        .option {
+            padding: 0.7rem;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .option.correct {
+            border-color: var(--correct);
+            background-color: rgba(45, 198, 83, 0.1);
+        }
+        
+        .explanation-section {
+            margin-top: 2rem;
+        }
+        
+        .explanation-title {
+            color: var(--info);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--light);
+            padding-bottom: 0.5rem;
+        }
+        
+        .explanation-content {
+            background-color: rgba(72, 149, 239, 0.05);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--info);
+        }
+        
+        .explanation-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .explanation-content strong {
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="question-card">
+            <h2 class="question-title">Question</h2>
+            <div class="question-text">
+                Le volume de l'enveloppe d'une montgolfière est de 10 000 m3, la masse volumique de l'air extérieur est de 1,225 kg.m-3 et la masse volumique de l'air chaud de 1,100 kg.m-3. La masse totale maximale de la montgolfière est de :
+                
+            </div>
+            <div class="options-container">
+                <div class="option correct">A- 1 250 kg</div><div class="option">B- 12 250 kg</div><div class="option">C- 11 000 kg</div><div class="option">D- 1 100 kg</div>
+            </div>
+        </div>
+        
+        <div class="explanation-section">
+            <h2 class="explanation-title">Explication</h2>
+            <div class="explanation-content">
+                Il semble qu'on parle de la masse du ballon SANS l'air chaud (mal précisé en effet).<br/>
+
+Pour bien savoir de quoi on parle, il est important de clairement définir le système étudié. Puis, comprendre que le poids de la montgolfière, lui, dépend de la masse d'air dans le ballon.<br/>
+<br/>
+
+Pour être rigoureux, voici le raisonnement :<br/>
+<br/>
+
+Soit m<sub>air</sub> la masse d'air dans le ballon.<br/>
+
+Soient ρ<sub>ext</sub> et ρ<sub>int</sub> les masses volumiques des airs respectivement extérieure et intérieure du ballon.<br/>
+
+Soit V le volume du ballon.<br/>
+
+Soit g l'intensité de pesanteur.<br/>
+<br/>
+<span class="u">Système étudié</span> : montgolfière (ballon vide) de masse m.<br/>
+<span class="u">Référentiel</span> : terrestre, supposé galiléen.<br/>
+<span class="u">Actions du milieu extérieur</span> : <strong>P = (m + m<sub>air</sub>) g</strong> (poids) et <strong>π = ρ<sub>ext</sub> V g</strong> (poussée d'Archimède).<br/>
+<br/>
+
+Condition pour voler : π &gt; P.<br/>
+<br/>
+
+P &lt; π<br/>
+
+(m + m<sub>air</sub>) g &lt; ρ<sub>ext</sub> V g<br/>
+
+m + m<sub>air</sub> &lt; ρ<sub>ext</sub> V<br/>
+
+m &lt; ρ<sub>ext</sub> V - m<sub>air</sub><br/>
+
+m &lt; ρ<sub>ext</sub> V - ρ<sub>int</sub> V<br/>
+
+m &lt; (ρ<sub>ext</sub> - ρ<sub>int</sub>) V<br/>
+<br/>
+
+Application numérique : m &lt; (1.225 - 1.100) × 10000 = 1250 kg
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explication BIA</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --danger: #f94144;
+            --info: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #adb5bd;
+            --correct: #2dc653;
+            --incorrect: #e63946;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            background-color: #f0f2f5;
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .question-card {
+            margin-bottom: 2rem;
+        }
+        
+        .question-title {
+            color: var(--primary);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--light);
+            padding-bottom: 0.5rem;
+        }
+        
+        .question-text {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .question-text img {
+            max-width: 100%;
+            height: auto;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        
+        .options-container {
+            display: grid;
+            gap: 0.7rem;
+            margin-bottom: 2rem;
+        }
+        
+        .option {
+            padding: 0.7rem;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .option.correct {
+            border-color: var(--correct);
+            background-color: rgba(45, 198, 83, 0.1);
+        }
+        
+        .explanation-section {
+            margin-top: 2rem;
+        }
+        
+        .explanation-title {
+            color: var(--info);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--light);
+            padding-bottom: 0.5rem;
+        }
+        
+        .explanation-content {
+            background-color: rgba(72, 149, 239, 0.05);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--info);
+        }
+        
+        .explanation-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .explanation-content strong {
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="question-card">
+            <h2 class="question-title">Question</h2>
+            <div class="question-text">
+                Pour tourner selon l’axe de tangage, je dois :
+                
+            </div>
+            <div class="options-container">
+                <div class="option correct">A- actionner le manche vers l’avant ou vers l’arrière</div><div class="option">B- actionner le manche vers la gauche ou vers la droite</div><div class="option">C- utiliser les palonniers</div><div class="option">D- changer le pas d’hélice</div>
+            </div>
+        </div>
+        
+        <div class="explanation-section">
+            <h2 class="explanation-title">Explication</h2>
+            <div class="explanation-content">
+                L’axe de tangage est l’axe horizontal qui va d’une aile à l’autre de l’avion. Tourner autour de cet axe signifie que le nez de l’avion monte ou descend. Voici comment chaque option influence le contrôle de l’avion :<br/>
+<br/>
+<br/>
+<strong>Actionner le manche vers l’avant ou vers l’arrière</strong> : Pousser le manche vers l’avant fait descendre le nez de l’avion (pitch down), tandis que tirer le manche vers l’arrière fait monter le nez de l’avion (pitch up). Cela contrôle le mouvement de tangage.<br/>
+<br/>
+<strong>Actionner le manche vers la gauche ou vers la droite</strong> : Cela contrôle l’axe de roulis (l’axe longitudinal allant du nez à la queue), provoquant l’inclinaison de l’avion sur les côtés, mais n’affecte pas directement le tangage.<br/>
+<br/>
+<strong>Utiliser les palonniers</strong> : Les palonniers contrôlent l’axe de lacet (l’axe vertical allant du dessus au dessous de l’avion), permettant de diriger l’avion à gauche ou à droite au sol ou de coordonner les virages en vol, mais n’affectent pas le tangage.<br/>
+<br/>
+<strong>Changer le pas d’hélice</strong> : Cela ajuste l’angle des pales de l’hélice pour optimiser la performance du moteur, mais n’a pas d’effet direct sur le mouvement de l’avion autour de l’axe de tangage.<br/>
+<br/>
+<br/>
+
+Pour contrôler le tangage de l’avion, vous devez donc actionner le manche vers l’avant ou vers l’arrière.
+            </div>
+        </div>
+    </div>
+</body>
+</html>

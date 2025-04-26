@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Etude des aéronefs et des engins spatiaux - (B.I.A. 2023)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --danger: #f94144;
+            --info: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #adb5bd;
+            --correct: #2dc653;
+            --incorrect: #e63946;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f2f5;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .quiz-title {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .quiz-subtitle {
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .question-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            display: none;
+        }
+        
+        .question-card.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .question-number {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .question-text img {
+            max-width: 100%;
+            height: auto;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        
+        .options-container {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .option-btn {
+            background-color: var(--light);
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            display: flex;
+            align-items: center;
+        }
+        
+        .option-btn:hover {
+            background-color: #e9ecef;
+            transform: translateY(-2px);
+        }
+        
+        .option-btn.selected {
+            border-color: var(--primary);
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+        
+        .option-btn.correct {
+            border-color: var(--correct);
+            background-color: rgba(45, 198, 83, 0.1);
+        }
+        
+        .option-btn.incorrect {
+            border-color: var(--incorrect);
+            background-color: rgba(230, 57, 70, 0.1);
+        }
+        
+        .option-btn.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        .option-prefix {
+            font-weight: 600;
+            color: var(--primary);
+            margin-right: 10px;
+            min-width: 25px;
+        }
+        
+        .option-btn.correct .option-prefix {
+            color: var(--correct);
+        }
+        
+        .option-btn.incorrect .option-prefix {
+            color: var(--incorrect);
+        }
+        
+        .feedback-icon {
+            margin-left: auto;
+            font-size: 1.2rem;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+        
+        .btn-next {
+            display: none;
+        }
+        
+        .results-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            display: none;
+        }
+        
+        .results-card.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        .results-card h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .results-card p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .celebration {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .explanation-note {
+            font-size: 0.9rem;
+            color: var(--info);
+            margin-top: 1rem;
+            display: block;
+        }
+        
+        .explanation-link {
+            color: var(--info);
+            text-decoration: none;
+        }
+        
+        .explanation-link:hover {
+            text-decoration: underline;
+        }
+        
+        .score-display {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 1rem 0;
+        }
+        
+        .answer-feedback {
+            font-size: 1rem;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .answer-feedback.correct {
+            background-color: rgba(45, 198, 83, 0.1);
+            color: var(--correct);
+            display: block;
+        }
+        
+        .answer-feedback.incorrect {
+            background-color: rgba(230, 57, 70, 0.1);
+            color: var(--incorrect);
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .quiz-title {
+                font-size: 1.75rem;
+            }
+            
+            .question-text {
+                font-size: 1.1rem;
+            }
+            
+            .option-btn {
+                padding: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="quiz-header">
+            <h1 class="quiz-title">Etude des aéronefs et des engins spatiaux</h1>
+            <h2 class="quiz-subtitle">(B.I.A. 2023)</h2>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+        </div>
+        
+        <div id="questions-container">
+            <!-- Questions will be inserted here by JavaScript -->
+        </div>
+        
+        <div class="results-card" id="results-card">
+            <div class="celebration">🎉</div>
+            <h2>Mission Accomplie!</h2>
+            <p>Vous avez terminé le QCM.</p>
+            <div id="final-score" class="score-display">Score: 0/0</div>
+            <a href="annales_corrections/2023_cda_corrections.html" class="btn btn-primary">Voir la correction complète</a>
+        </div>
+    </div>
+    
+    <script>
+        // Quiz data
+        const quizData = {"title": "Etude des a\u00e9ronefs et des engins spatiaux", "subtitle": "(B.I.A. 2023)", "questions": [{"text": "<div class=\"q\"><p>1 - Tout appareil capable de s\u2019\u00e9lever et de circuler dans l\u2019espace a\u00e9rien\u00a0: <em><a href=\"annales_explications/explication_3565.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- est un a\u00e9ronef", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- subit des forces a\u00e9rodynamiques", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- poss\u00e8de obligatoirement un moteur", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- est pilot\u00e9 depuis l\u2019int\u00e9rieur de son cockpit", "value": "d", "letter": "D", "is_correct": false}], "id": 1, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>2 - Quel type d'a\u00e9ronef utilise le d\u00e9placement de son centre de gravit\u00e9 pour changer de trajectoire\u00a0? <em><a href=\"annales_explications/explication_3566.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- avions et planeurs", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- paramoteurs et parapentes", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- deltaplanes et pendulaires", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- h\u00e9licopt\u00e8res et autogires", "value": "d", "letter": "D", "is_correct": false}], "id": 2, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>3 - Le rotor anticouple des h\u00e9licopt\u00e8res est contr\u00f4l\u00e9 par\u00a0: <em><a href=\"annales_explications/explication_3567.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- les palonniers", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- le levier du pas collectif", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- le levier du pas cyclique", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- la manette des gaz", "value": "d", "letter": "D", "is_correct": false}], "id": 3, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>4 - Une montgolfi\u00e8re\u00a0: <em><a href=\"annales_explications/explication_3568.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- s\u2019\u00e9l\u00e8ve dans l\u2019air car la masse volumique de l\u2019air chaud est plus faible que celle de l\u2019air froid", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- perd de l\u2019altitude lorsque la temp\u00e9rature de l\u2019air situ\u00e9 dans l\u2019enveloppe augmente", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- fait partie de la cat\u00e9gorie des a\u00e9rodynes", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- peut \u00eatre dirig\u00e9e \u00e0 l\u2019aide d\u2019une gouverne de profondeur situ\u00e9e sur la nacelle", "value": "d", "letter": "D", "is_correct": false}], "id": 4, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>5 - Un a\u00e9ronef qui, en croisi\u00e8re, voit son rotor entra\u00een\u00e9 par le vent relatif est\u00a0: <em><a href=\"annales_explications/explication_3569.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- un convertible", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- un girodyne", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- un h\u00e9licopt\u00e8re", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- un autogire", "value": "d", "letter": "D", "is_correct": true}], "id": 5, "correct_answer": "D"}, {"text": "<div class=\"q\"><p>6 - Un turbopropulseur\u00a0: <em><a href=\"annales_explications/explication_3570.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- est un pulsor\u00e9acteur pr\u00e9c\u00e9d\u00e9 d\u2019un r\u00e9ducteur et d\u2019une h\u00e9lice", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- est un stator\u00e9acteur pr\u00e9c\u00e9d\u00e9 d\u2019un r\u00e9ducteur et d\u2019une h\u00e9lice", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- est un moteur \u00e0 pistons \u00e9quip\u00e9 d\u2019un turbocompresseur", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- est un turbor\u00e9acteur pr\u00e9c\u00e9d\u00e9 d\u2019un r\u00e9ducteur et d\u2019une h\u00e9lice", "value": "d", "letter": "D", "is_correct": true}], "id": 6, "correct_answer": "D"}, {"text": "<div class=\"q\"><p>7 - Si on la compare aux voilures d\u2019un avion, la voilure des planeurs modernes se caract\u00e9rise par\u00a0: <em><a href=\"annales_explications/explication_3571.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- une petite envergure", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- une tr\u00e8s grande finesse", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- une grande \u00e9paisseur du profil", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- une tr\u00e8s grande rigidit\u00e9", "value": "d", "letter": "D", "is_correct": false}], "id": 7, "correct_answer": "B"}, {"text": "<div class=\"q\"><p>8 - La disposition des cylindres de ce moteur est\u00a0: <img alt=\"Moteur\" src=\"imgs/c1-2023.gif\"/> <em><a href=\"annales_explications/explication_3572.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- en ligne", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- en V", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- en \u00e9toile", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- \u00e0 plat", "value": "d", "letter": "D", "is_correct": false}], "id": 8, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>9 - En consid\u00e9rant la figure ci-contre, les conditions correctes sont (associer les chiffres et les lettres)\u00a0: <img alt=\"Parachute l\u00e9gend\u00e9\" src=\"imgs/c2-2023.gif\"/> <em><a href=\"annales_explications/explication_3573.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- A2, B4, C3, D1", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- A4, B5, C2, D1", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- A2, B4, C1, D3", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- A4, B2, C3, D5", "value": "d", "letter": "D", "is_correct": false}], "id": 9, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>10 - Dans une aile d\u2019avion, les pi\u00e8ces se situant dans le sens longitudinal de l\u2019aile et assurant la plus grande partie de la r\u00e9sistance sont\u00a0: <em><a href=\"annales_explications/explication_3574.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- les traverses", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- les longerons", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- les lisses", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- les raidisseurs", "value": "d", "letter": "D", "is_correct": false}], "id": 10, "correct_answer": "B"}, {"text": "<div class=\"q\"><p>11 - La plupart des moteurs d\u2019avions l\u00e9gers sont \u00e9quip\u00e9s d\u2019un syst\u00e8me de double allumage qui a pour principal avantage\u00a0: <em><a href=\"annales_explications/explication_3575.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- de r\u00e9guler la consommation \u00e9lectrique", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- de r\u00e9duire la consommation de carburant", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- d\u2019am\u00e9liorer la combustion et d\u2019augmenter la s\u00e9curit\u00e9 en vol", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- de diminuer l\u2019usure des bougies", "value": "d", "letter": "D", "is_correct": false}], "id": 11, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>12 - Un train classique est constitu\u00e9 de\u00a0: <em><a href=\"annales_explications/explication_3576.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- un train principal et une roulette de queue", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- un train principal et une roulette de nez", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- un train monotrace et deux balancines", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- un diabolo avant et deux roulettes arri\u00e8re", "value": "d", "letter": "D", "is_correct": false}], "id": 12, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>13 - L\u2019indication donn\u00e9e par cet instrument est\u00a0: <img alt=\"Horizon artificiel\" src=\"imgs/c3-2023.gif\"/> <em><a href=\"annales_explications/explication_3577.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- virage \u00e0 droite inclinaison 30\u00b0", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- virage \u00e0 gauche inclinaison 30\u00b0", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- vol en palier", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- virage \u00e0 droite inclinaison 10\u00b0", "value": "d", "letter": "D", "is_correct": false}], "id": 13, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>14 - L\u2019horizon artificiel fournit des indications sur\u00a0: <em><a href=\"annales_explications/explication_3578.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- les variations d\u2019altitude", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- la sym\u00e9trie du vol", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- la visibilit\u00e9 horizontale", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- l\u2019assiette et l\u2019inclinaison", "value": "d", "letter": "D", "is_correct": true}], "id": 14, "correct_answer": "D"}, {"text": "<div class=\"q\"><p>15 - La pr\u00e9sence d'un r\u00e9chauffage de carburateur est n\u00e9cessaire pour\u00a0: <em><a href=\"annales_explications/explication_3579.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- am\u00e9liorer son fonctionnement \u00e0 froid", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- pallier \u00e0 la formation de glace dans le venturi", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- \u00e9chauffer le m\u00e9lange avant d'entrer dans les cylindres, et donc, am\u00e9liorer sa combustion", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- d\u00e9marrer le moteur", "value": "d", "letter": "D", "is_correct": false}], "id": 15, "correct_answer": "B"}, {"text": "<div class=\"q\"><p>16 - Dans un moteur \u00e0 4 temps, quel temps est celui qui fournit l'\u00e9nergie\u00a0? <em><a href=\"annales_explications/explication_3580.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- l\u2019admission", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- la compression", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- explosion / d\u00e9tente", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- l\u2019\u00e9chappement", "value": "d", "letter": "D", "is_correct": false}], "id": 16, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>17 - Avec un avion \u00e9quip\u00e9 d\u2019une h\u00e9lice \u00e0 pas variable, le grand pas sera utilis\u00e9\u00a0: <em><a href=\"annales_explications/explication_3581.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- au d\u00e9collage", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- \u00e0 l\u2019atterrissage", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- au d\u00e9collage et \u00e0 l\u2019atterrissage", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- en vol de croisi\u00e8re", "value": "d", "letter": "D", "is_correct": true}], "id": 17, "correct_answer": "D"}, {"text": "<div class=\"q\"><p>18 - Le bord d\u2019attaque est\u00a0: <em><a href=\"annales_explications/explication_3582.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- l\u2019aileron", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- le bord avant de l\u2019aile", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- le bord arri\u00e8re de l\u2019aile", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- le bout d\u2019aile", "value": "d", "letter": "D", "is_correct": false}], "id": 18, "correct_answer": "B"}, {"text": "<div class=\"q\"><p>19 - L\u2019instrument qui vous permet de d\u00e9tecter une glissade est\u00a0: <em><a href=\"annales_explications/explication_3583.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- le conservateur de cap", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- la bille", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- l\u2019horizon artificiel", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- l\u2019an\u00e9mom\u00e8tre", "value": "d", "letter": "D", "is_correct": false}], "id": 19, "correct_answer": "B"}, {"text": "<div class=\"q\"><p>20 - L\u2019a\u00e9rodrome se situe \u00e0 10 nautiques miles (NM) de votre position. Cela correspond \u00e0\u00a0: <em><a href=\"annales_explications/explication_3584.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- 18.52 km", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- 18.52 m", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- 1,852 m", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- 1,852 km", "value": "d", "letter": "D", "is_correct": false}], "id": 20, "correct_answer": "A"}], "correctionUrl": "annales_corrections/2023_cda_corrections.html"};
+        
+        // DOM elements
+        const questionsContainer = document.getElementById('questions-container');
+        const progressBar = document.getElementById('progress-bar');
+        const resultsCard = document.getElementById('results-card');
+        const finalScore = document.getElementById('final-score');
+        
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = new Array(quizData.questions.length).fill(false);
+        
+        // Initialize the quiz
+        function initQuiz() {
+            // Create all question cards
+            quizData.questions.forEach((question, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+                questionCard.id = `question-${index}`;
+                
+                if (index === 0) {
+                    questionCard.classList.add('active');
+                }
+                
+                questionCard.innerHTML = `
+                    <div class="question-number">Question ${index + 1} / ${quizData.questions.length}</div>
+                    <div class="question-text">${question.text}</div>
+                    <div class="options-container">
+                        ${question.options.map((option, i) => `
+                            <button class="option-btn" data-value="${option.value}" data-letter="${option.letter}" data-correct="${option.is_correct}">
+                                <span class="option-prefix">${option.letter}.</span>
+                                <span class="option-text">${option.text}</span>
+                                <span class="feedback-icon"></span>
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div id="feedback-${index}" class="answer-feedback"></div>
+                    <div class="controls">
+                        ${index > 0 ? `<button class="btn btn-outline btn-prev" data-index="${index}">Précédent</button>` : `<div></div>`}
+                        <button class="btn btn-primary btn-next" data-index="${index}">Suivant</button>
+                    </div>
+                    ${question.text.includes('explications.php') || question.text.includes('annales_explications') ? 
+                        `<span class="explanation-note">Cliquez sur "<a href="#" class="explanation-link" target="_blank">Explication</a>" pour comprendre cette question.</span>` : 
+                        ``}
+                `;
+                
+                questionsContainer.appendChild(questionCard);
+                
+                // Add event listeners to options
+                const options = questionCard.querySelectorAll('.option-btn');
+                options.forEach(option => {
+                    option.addEventListener('click', function() {
+                        if (!answered[index]) {
+                            selectOption(this, index);
+                        }
+                    });
+                });
+                
+                // Add event listener for next button
+                const nextBtn = questionCard.querySelector('.btn-next');
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', function() {
+                        goToNextQuestion(index);
+                    });
+                }
+                
+                // Add event listener for prev button
+                const prevBtn = questionCard.querySelector('.btn-prev');
+                if (prevBtn) {
+                    prevBtn.addEventListener('click', function() {
+                        goToPrevQuestion(index);
+                    });
+                }
+            });
+            
+            updateProgressBar();
+        }
+        
+        function selectOption(optionElement, questionIndex) {
+            // If this question has already been answered, do nothing
+            if (answered[questionIndex]) {
+                return;
+            }
+            
+            // Mark this question as answered
+            answered[questionIndex] = true;
+            
+            // Remove selected class from all options in this question
+            const allOptions = optionElement.parentElement.querySelectorAll('.option-btn');
+            allOptions.forEach(opt => {
+                opt.classList.remove('selected', 'correct', 'incorrect');
+                opt.classList.add('disabled');
+            });
+            
+            // Add selected class to clicked option
+            optionElement.classList.add('selected');
+            
+            // Check if the answer is correct
+            const isCorrect = optionElement.dataset.correct === "true";
+            const correctOption = Array.from(allOptions).find(opt => opt.dataset.correct === "true");
+            const feedbackElement = document.getElementById(`feedback-${questionIndex}`);
+            
+            // Update score
+            if (isCorrect) {
+                score++;
+                optionElement.classList.add('correct');
+                optionElement.querySelector('.feedback-icon').innerHTML = "✓";
+                feedbackElement.textContent = "Correct!";
+                feedbackElement.classList.add('correct');
+                feedbackElement.classList.remove('incorrect');
+            } else {
+                optionElement.classList.add('incorrect');
+                optionElement.querySelector('.feedback-icon').innerHTML = "✗";
+                feedbackElement.textContent = `Incorrect. La bonne réponse est ${correctOption.dataset.letter}.`;
+                feedbackElement.classList.add('incorrect');
+                feedbackElement.classList.remove('correct');
+                
+                // Highlight the correct answer
+                correctOption.classList.add('correct');
+                correctOption.querySelector('.feedback-icon').innerHTML = "✓";
+            }
+            
+            // Show next button
+            const nextBtn = optionElement.parentElement.parentElement.querySelector('.btn-next');
+            nextBtn.style.display = 'block';
+        }
+        
+        function goToNextQuestion(currentIndex) {
+            if (currentIndex < quizData.questions.length - 1) {
+                document.getElementById(`question-${currentIndex}`).classList.remove('active');
+                document.getElementById(`question-${currentIndex + 1}`).classList.add('active');
+                currentQuestion = currentIndex + 1;
+                updateProgressBar();
+            } else {
+                showResults();
+            }
+        }
+        
+        function goToPrevQuestion(currentIndex) {
+            if (currentIndex > 0) {
+                document.getElementById(`question-${currentIndex}`).classList.remove('active');
+                document.getElementById(`question-${currentIndex - 1}`).classList.add('active');
+                currentQuestion = currentIndex - 1;
+                updateProgressBar();
+            }
+        }
+        
+        function updateProgressBar() {
+            const progressPercentage = ((currentQuestion + 1) / quizData.questions.length) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+        }
+        
+        function showResults() {
+            document.getElementById(`question-${quizData.questions.length - 1}`).classList.remove('active');
+            resultsCard.classList.add('active');
+            
+            // Update final score
+            finalScore.textContent = `Score: ${score}/${quizData.questions.length}`;
+        }
+        
+        // Initialize the quiz when page loads
+        document.addEventListener('DOMContentLoaded', initQuiz);
+    </script>
+</body>
+</html>

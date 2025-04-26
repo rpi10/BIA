@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anglais - (B.I.A. 2022)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --danger: #f94144;
+            --info: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #adb5bd;
+            --correct: #2dc653;
+            --incorrect: #e63946;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f2f5;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .quiz-title {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .quiz-subtitle {
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .question-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            display: none;
+        }
+        
+        .question-card.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .question-number {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .question-text img {
+            max-width: 100%;
+            height: auto;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        
+        .options-container {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .option-btn {
+            background-color: var(--light);
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            display: flex;
+            align-items: center;
+        }
+        
+        .option-btn:hover {
+            background-color: #e9ecef;
+            transform: translateY(-2px);
+        }
+        
+        .option-btn.selected {
+            border-color: var(--primary);
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+        
+        .option-btn.correct {
+            border-color: var(--correct);
+            background-color: rgba(45, 198, 83, 0.1);
+        }
+        
+        .option-btn.incorrect {
+            border-color: var(--incorrect);
+            background-color: rgba(230, 57, 70, 0.1);
+        }
+        
+        .option-btn.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        .option-prefix {
+            font-weight: 600;
+            color: var(--primary);
+            margin-right: 10px;
+            min-width: 25px;
+        }
+        
+        .option-btn.correct .option-prefix {
+            color: var(--correct);
+        }
+        
+        .option-btn.incorrect .option-prefix {
+            color: var(--incorrect);
+        }
+        
+        .feedback-icon {
+            margin-left: auto;
+            font-size: 1.2rem;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+        
+        .btn-next {
+            display: none;
+        }
+        
+        .results-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            display: none;
+        }
+        
+        .results-card.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        .results-card h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .results-card p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .celebration {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .explanation-note {
+            font-size: 0.9rem;
+            color: var(--info);
+            margin-top: 1rem;
+            display: block;
+        }
+        
+        .explanation-link {
+            color: var(--info);
+            text-decoration: none;
+        }
+        
+        .explanation-link:hover {
+            text-decoration: underline;
+        }
+        
+        .score-display {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 1rem 0;
+        }
+        
+        .answer-feedback {
+            font-size: 1rem;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .answer-feedback.correct {
+            background-color: rgba(45, 198, 83, 0.1);
+            color: var(--correct);
+            display: block;
+        }
+        
+        .answer-feedback.incorrect {
+            background-color: rgba(230, 57, 70, 0.1);
+            color: var(--incorrect);
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .quiz-title {
+                font-size: 1.75rem;
+            }
+            
+            .question-text {
+                font-size: 1.1rem;
+            }
+            
+            .option-btn {
+                padding: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="quiz-header">
+            <h1 class="quiz-title">Anglais</h1>
+            <h2 class="quiz-subtitle">(B.I.A. 2022)</h2>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+        </div>
+        
+        <div id="questions-container">
+            <!-- Questions will be inserted here by JavaScript -->
+        </div>
+        
+        <div class="results-card" id="results-card">
+            <div class="celebration">🎉</div>
+            <h2>Mission Accomplie!</h2>
+            <p>Vous avez terminé le QCM.</p>
+            <div id="final-score" class="score-display">Score: 0/0</div>
+            <a href="annales_corrections/2022_ang_corrections.html" class="btn btn-primary">Voir la correction complète</a>
+        </div>
+    </div>
+    
+    <script>
+        // Quiz data
+        const quizData = {"title": "Anglais", "subtitle": "(B.I.A. 2022)", "questions": [{"text": "<div class=\"q\"><p>1 - Une seule de ces descriptions est correcte, laquelle\u00a0? <em><a href=\"annales_explications/explication_3503.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- pulling the stick back makes the elevator go left", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- pushing the stick makes the rudder move up", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- pulling the stick makes the rudder move up", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- the stick changes the position on the aileron and elevator", "value": "d", "letter": "D", "is_correct": true}], "id": 1, "correct_answer": "D"}, {"text": "<div class=\"q\"><p>2 - Sur un a\u00e9ronef, l\u2019an\u00e9mom\u00e8tre (ou Badin) est appel\u00e9\u00a0: <em><a href=\"annales_explications/explication_3504.html\" target=\"_blank\">Explication</a></em></p></div>", "options": [{"text": "A- cruisecontrol tachymeter", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- windspeed indicator", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- airspeed indicator", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- anemospeedmeter", "value": "d", "letter": "D", "is_correct": false}], "id": 2, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>3 - What is a drag\u00a0? A force that\u00a0: <em><a href=\"annales_explications/explication_3505.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- propels an airplane", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- acts at a 90-degree angle to the airflow", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- gives resistance", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- mesures the gravity of an object", "value": "d", "letter": "D", "is_correct": false}], "id": 3, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>4 - When the pilot pushes the stick forward,  <em><a href=\"annales_explications/explication_3506.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- the flaps move", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- the rudder moves", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- the ailerons move", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- the elevator moves", "value": "d", "letter": "D", "is_correct": true}], "id": 4, "correct_answer": "D"}, {"text": "<div class=\"q\"><p>5 - Which force is used to compensate gravity\u00a0? <em><a href=\"annales_explications/explication_3507.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- lift", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- weight", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- thrust", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- drag", "value": "d", "letter": "D", "is_correct": false}], "id": 5, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>6 - Message from air traffic controller\u00a0: \u201cSet heading 270\u00b0\u201d \u2013 Que devez-vous faire\u00a0? <em><a href=\"annales_explications/explication_3508.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- vous tournez la t\u00eate au cap 270\u00b0", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- vous prenez le cap 270\u00b0", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- vous irez si vous avez le temps au cap 270\u00b0", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- vous maintenez le cap 135\u00b0", "value": "d", "letter": "D", "is_correct": false}], "id": 6, "correct_answer": "B"}, {"text": "<div class=\"q\"><p>7 - Le sigle ILS signifie\u00a0: <em><a href=\"annales_explications/explication_3509.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- Intelligent Landing Safer", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- Instrument Landing System", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- Information Leading Service", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- Increase Leading System", "value": "d", "letter": "D", "is_correct": false}], "id": 7, "correct_answer": "B"}, {"text": "<div class=\"q\"><p>8 - Si la tour vous communique \u00ab\u00a0F-CG clear to line up runway 28\u00a0\u00bb c\u2019est que vous \u00eates\u00a0: <em><a href=\"annales_explications/explication_3510.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- au point d\u2019attente", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- sur la piste 28", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- en vent arri\u00e8re", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- au parking", "value": "d", "letter": "D", "is_correct": false}], "id": 8, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>9 - En anglais a\u00e9ronautique, le terme \"<em>clearance</em>\" signifie\u00a0: <em><a href=\"annales_explications/explication_3511.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- nettoyage d\u2019une piste", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- autorisation", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- ciel d\u00e9gag\u00e9", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- \u00e9clairage d\u2019une piste", "value": "d", "letter": "D", "is_correct": false}], "id": 9, "correct_answer": "B"}, {"text": "<div class=\"q\"><p>10 - Le train d'atterrissage principal se nomme en anglais\u00a0: <em><a href=\"annales_explications/explication_3512.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- gear box", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- main landing gear", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- principal landing", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- tail landing gear", "value": "d", "letter": "D", "is_correct": false}], "id": 10, "correct_answer": "B"}, {"text": "<div class=\"q\"><p>11 - Choisissez la bonne combinaison\u00a0: <img alt=\"T\u00eate d'avion l\u00e9gend\u00e9e\" src=\"imgs/g1-2022.gif\"/> <em><a href=\"annales_explications/explication_3513.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- 1\u2022 fuselage 2\u2022 landing gear 3\u2022 pitot tube", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- 2\u2022 fuselage 1\u2022 landing gear 3\u2022 pitot tube", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- 1\u2022 fuselage 3\u2022 landing gear 2\u2022 pitot tube", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- 2\u2022 fuselage 3\u2022 landing gear 1\u2022 pitot tube", "value": "d", "letter": "D", "is_correct": false}], "id": 11, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>12 - A plane flies because the air flows around\u00a0: <em><a href=\"annales_explications/explication_3514.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- the wings", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- the motor", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- the engine", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- the flaps", "value": "d", "letter": "D", "is_correct": false}], "id": 12, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>13 - Sur le circuit de piste propos\u00e9, l\u2019avion r\u00e9f\u00e9renc\u00e9 1 se trouve en\u00a0: <img alt=\"Circuit de piste\" src=\"imgs/g2-2022.gif\"/> <em><a href=\"annales_explications/explication_3515.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- base leg", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- headwind", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- downwind", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- crosswind", "value": "d", "letter": "D", "is_correct": false}], "id": 13, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>14 - En anglais le terme \u00ab\u00a0Maximum Take Off Weight\u00a0\u00bb signifie\u00a0: <em><a href=\"annales_explications/explication_3516.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- masse maximale \u00e0 vide de l\u2019avion", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- masse maximale au d\u00e9collage", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- masse maximale embarqu\u00e9e par l\u2019avion pour pouvoir d\u00e9coller", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- poids maximal supportable par la piste au moment du d\u00e9collage", "value": "d", "letter": "D", "is_correct": false}], "id": 14, "correct_answer": "B"}, {"text": "<div class=\"q\"><p>15 - Un vent de travers se dit\u00a0: <em><a href=\"annales_explications/explication_3517.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- crosswind", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- vertical gust", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- contrails", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- sidewind", "value": "d", "letter": "D", "is_correct": false}], "id": 15, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>16 - \u00c0 la radio l\u2019indication \u00ab\u00a0number two, clear to land, runway two two\u00a0\u00bb \u00e9mise par le contr\u00f4leur signifie\u00a0: <em><a href=\"annales_explications/explication_3518.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- num\u00e9ro 2 autoris\u00e9 \u00e0 l\u2019atterrissage piste 22", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- autoris\u00e9 \u00e0 l\u2019atterrissage piste 2 ou 22", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- autoris\u00e9 \u00e0 l\u2019atterrissage piste 22, vous d\u00e9gagerez par la sortie n\u00b02", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- autoris\u00e9 au d\u00e9collage piste 2 ou piste 22", "value": "d", "letter": "D", "is_correct": false}], "id": 16, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>17 - L'expression \"<em>prendre un cap</em>\" se dit\u00a0: <em><a href=\"annales_explications/explication_3519.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- to set a heading", "value": "a", "letter": "A", "is_correct": true}, {"text": "B- to fix a magnetic course", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- to take a road", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- to take a cap", "value": "d", "letter": "D", "is_correct": false}], "id": 17, "correct_answer": "A"}, {"text": "<div class=\"q\"><p>18 - Pendant un essai radio, la tour de contr\u00f4le vous r\u00e9pond\u00a0: \u00ab\u00a0Loud and clear\u00a0\u00bb. Cela signifie que\u00a0: <em><a href=\"annales_explications/explication_3520.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- le volume de votre radio est trop \u00e9lev\u00e9", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- la tour de contr\u00f4le vous re\u00e7oit cinq sur cinq", "value": "b", "letter": "B", "is_correct": true}, {"text": "C- votre \u00e9mission radio est hach\u00e9e", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- il est clair que votre radio ne fonctionne pas", "value": "d", "letter": "D", "is_correct": false}], "id": 18, "correct_answer": "B"}, {"text": "<div class=\"q\"><p>19 - Le terme \u00ab\u00a0steerable nose wheel\u00a0\u00bb d\u00e9signe\u00a0: <em><a href=\"annales_explications/explication_3521.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- une roulette de nez fixe", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- une roulette de queue orientable", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- une roulette de nez orientable", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- le pneu avant orientable", "value": "d", "letter": "D", "is_correct": false}], "id": 19, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>20 - \u201cPrimary flight controls\u201d of airplane refers to\u00a0: <em><a href=\"annales_explications/explication_3522.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- the air controllers who work with primary radar", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- flaps, spoilers and slats", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- ailerons, elevator and rudder", "value": "c", "letter": "C", "is_correct": true}, {"text": "D- the captain and the first officer", "value": "d", "letter": "D", "is_correct": false}], "id": 20, "correct_answer": "C"}, {"text": "<div class=\"q\"><p>21 - Un message de la tour vous pr\u00e9vient d'un danger. Il comporte le mot \"<em>gust</em>\". Cela concerne\u00a0: <em><a href=\"annales_explications/explication_3523.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- des vols d'oiseaux", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- une nuage de poussi\u00e8re", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- des fortes pr\u00e9cipitations", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- des rafales de vent", "value": "d", "letter": "D", "is_correct": true}], "id": 21, "correct_answer": "D"}, {"text": "<div class=\"q\"><p>22 - Les \u00ab\u00a0strobe lights\u00a0\u00bb sont\u00a0: <em><a href=\"annales_explications/explication_3524.html\" target=\"_blank\">Explication</a></em> \u26a0\ufe0f</p></div>", "options": [{"text": "A- les feux de brouillard", "value": "a", "letter": "A", "is_correct": false}, {"text": "B- les feux d\u2019atterrissage", "value": "b", "letter": "B", "is_correct": false}, {"text": "C- les feux de navigation", "value": "c", "letter": "C", "is_correct": false}, {"text": "D- les feux \u00e0 \u00e9clat", "value": "d", "letter": "D", "is_correct": true}], "id": 22, "correct_answer": "D"}], "correctionUrl": "annales_corrections/2022_ang_corrections.html"};
+        
+        // DOM elements
+        const questionsContainer = document.getElementById('questions-container');
+        const progressBar = document.getElementById('progress-bar');
+        const resultsCard = document.getElementById('results-card');
+        const finalScore = document.getElementById('final-score');
+        
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = new Array(quizData.questions.length).fill(false);
+        
+        // Initialize the quiz
+        function initQuiz() {
+            // Create all question cards
+            quizData.questions.forEach((question, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+                questionCard.id = `question-${index}`;
+                
+                if (index === 0) {
+                    questionCard.classList.add('active');
+                }
+                
+                questionCard.innerHTML = `
+                    <div class="question-number">Question ${index + 1} / ${quizData.questions.length}</div>
+                    <div class="question-text">${question.text}</div>
+                    <div class="options-container">
+                        ${question.options.map((option, i) => `
+                            <button class="option-btn" data-value="${option.value}" data-letter="${option.letter}" data-correct="${option.is_correct}">
+                                <span class="option-prefix">${option.letter}.</span>
+                                <span class="option-text">${option.text}</span>
+                                <span class="feedback-icon"></span>
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div id="feedback-${index}" class="answer-feedback"></div>
+                    <div class="controls">
+                        ${index > 0 ? `<button class="btn btn-outline btn-prev" data-index="${index}">Précédent</button>` : `<div></div>`}
+                        <button class="btn btn-primary btn-next" data-index="${index}">Suivant</button>
+                    </div>
+                    ${question.text.includes('explications.php') || question.text.includes('annales_explications') ? 
+                        `<span class="explanation-note">Cliquez sur "<a href="#" class="explanation-link" target="_blank">Explication</a>" pour comprendre cette question.</span>` : 
+                        ``}
+                `;
+                
+                questionsContainer.appendChild(questionCard);
+                
+                // Add event listeners to options
+                const options = questionCard.querySelectorAll('.option-btn');
+                options.forEach(option => {
+                    option.addEventListener('click', function() {
+                        if (!answered[index]) {
+                            selectOption(this, index);
+                        }
+                    });
+                });
+                
+                // Add event listener for next button
+                const nextBtn = questionCard.querySelector('.btn-next');
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', function() {
+                        goToNextQuestion(index);
+                    });
+                }
+                
+                // Add event listener for prev button
+                const prevBtn = questionCard.querySelector('.btn-prev');
+                if (prevBtn) {
+                    prevBtn.addEventListener('click', function() {
+                        goToPrevQuestion(index);
+                    });
+                }
+            });
+            
+            updateProgressBar();
+        }
+        
+        function selectOption(optionElement, questionIndex) {
+            // If this question has already been answered, do nothing
+            if (answered[questionIndex]) {
+                return;
+            }
+            
+            // Mark this question as answered
+            answered[questionIndex] = true;
+            
+            // Remove selected class from all options in this question
+            const allOptions = optionElement.parentElement.querySelectorAll('.option-btn');
+            allOptions.forEach(opt => {
+                opt.classList.remove('selected', 'correct', 'incorrect');
+                opt.classList.add('disabled');
+            });
+            
+            // Add selected class to clicked option
+            optionElement.classList.add('selected');
+            
+            // Check if the answer is correct
+            const isCorrect = optionElement.dataset.correct === "true";
+            const correctOption = Array.from(allOptions).find(opt => opt.dataset.correct === "true");
+            const feedbackElement = document.getElementById(`feedback-${questionIndex}`);
+            
+            // Update score
+            if (isCorrect) {
+                score++;
+                optionElement.classList.add('correct');
+                optionElement.querySelector('.feedback-icon').innerHTML = "✓";
+                feedbackElement.textContent = "Correct!";
+                feedbackElement.classList.add('correct');
+                feedbackElement.classList.remove('incorrect');
+            } else {
+                optionElement.classList.add('incorrect');
+                optionElement.querySelector('.feedback-icon').innerHTML = "✗";
+                feedbackElement.textContent = `Incorrect. La bonne réponse est ${correctOption.dataset.letter}.`;
+                feedbackElement.classList.add('incorrect');
+                feedbackElement.classList.remove('correct');
+                
+                // Highlight the correct answer
+                correctOption.classList.add('correct');
+                correctOption.querySelector('.feedback-icon').innerHTML = "✓";
+            }
+            
+            // Show next button
+            const nextBtn = optionElement.parentElement.parentElement.querySelector('.btn-next');
+            nextBtn.style.display = 'block';
+        }
+        
+        function goToNextQuestion(currentIndex) {
+            if (currentIndex < quizData.questions.length - 1) {
+                document.getElementById(`question-${currentIndex}`).classList.remove('active');
+                document.getElementById(`question-${currentIndex + 1}`).classList.add('active');
+                currentQuestion = currentIndex + 1;
+                updateProgressBar();
+            } else {
+                showResults();
+            }
+        }
+        
+        function goToPrevQuestion(currentIndex) {
+            if (currentIndex > 0) {
+                document.getElementById(`question-${currentIndex}`).classList.remove('active');
+                document.getElementById(`question-${currentIndex - 1}`).classList.add('active');
+                currentQuestion = currentIndex - 1;
+                updateProgressBar();
+            }
+        }
+        
+        function updateProgressBar() {
+            const progressPercentage = ((currentQuestion + 1) / quizData.questions.length) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+        }
+        
+        function showResults() {
+            document.getElementById(`question-${quizData.questions.length - 1}`).classList.remove('active');
+            resultsCard.classList.add('active');
+            
+            // Update final score
+            finalScore.textContent = `Score: ${score}/${quizData.questions.length}`;
+        }
+        
+        // Initialize the quiz when page loads
+        document.addEventListener('DOMContentLoaded', initQuiz);
+    </script>
+</body>
+</html>
